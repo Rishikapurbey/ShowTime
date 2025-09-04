@@ -1,0 +1,13 @@
+.movie-list {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap; 
+  gap: 15px;
+  padding: 10px 40px;
+}
+
+
+.movie-list::-webkit-scrollbar {
+  display: none;
+}

@@ -1,0 +1,14 @@
+.watchlist-page {
+  padding: 20px 40px;
+}
+
+.watchlist-page h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.watchlist-message {
+  text-align: center;
+  margin-top: 50px;
+  color: #ccc;
+}

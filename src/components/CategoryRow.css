@@ -1,0 +1,10 @@
+.category-row {
+  margin-bottom: 20px;
+}
+
+.category-row h2 {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 15px;
+  padding: 0 40px; 
+}

@@ -1,0 +1,79 @@
+.header {
+  padding: 20px 40px;
+  background-color: #111;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative; 
+  
+  
+  box-shadow: 0 4px 15px -5px rgba(229, 9, 20, 0.7);
+}
+
+.header-logo {
+  text-decoration: none;
+  color: #E50914 !important;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.login-button {
+  background-color: #e50914;
+  color: #fff;
+  padding: 8px 17px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.login-button:hover {
+  background-color: #f6121d;
+}
+
+.welcome-message {
+  color: #ccc;
+  font-family: sans-serif;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.nav-link {
+  color: #e50914;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #fff;
+}
+
+.logout-button {
+  background-color: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 8px 17px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #fff;
+  color: #111;
+}
