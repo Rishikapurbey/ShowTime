@@ -1,60 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { searchMovies } from '../api/omdb';
+import useDebounce from '../hooks/useDebounce';
 import SearchBar from '../components/SearchBar';
 import MovieList from '../components/MovieList';
 import CategoryRow from '../components/CategoryRow';
-
-
 import './HomePage.css';
 
 const HomePage = () => {
-
   const [searchTerm, setSearchTerm] = useState('');
-  
-  const [searchResults, setSearchResults] = useState([]);
+  const query = useDebounce(searchTerm.trim(), 500);
 
-  const API_KEY = '595c2e8f';
+  const { data: searchResults = [], isFetching, isError, error } = useQuery({
+    queryKey: ['search', query],
+    queryFn: () => searchMovies(query),
+    enabled: query !== '',
+  });
 
-  useEffect(() => {
-    const fetchSearchResults = async () => {
-      try {
-        const response = await axios.get(
-          `http://www.omdbapi.com/?s=${searchTerm}&apikey=${API_KEY}`
-        );
-        if (response.data.Search) {
-          setSearchResults(response.data.Search);
-        } else {
-          setSearchResults([]);
-        }
-      } catch (error) {
-        console.error("Error fetching search results:", error);
-      }
-    };
-
-    
-    if (searchTerm.trim() === '') {
-      setSearchResults([]);
-      return;
-    }
-
-  
-    const delayDebounceFn = setTimeout(() => {
-      fetchSearchResults();
-    }, 500);
-
-
-    return () => clearTimeout(delayDebounceFn);
-
-  }, [searchTerm]); 
+  const isSearching = searchTerm.trim() !== '';
 
   return (
     <div className="homepage-content">
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-      
-      {searchTerm.trim() === '' ? (
+      {!isSearching ? (
         <>
-        
           <CategoryRow title="Latest Movies" searchTerm="movie" year="2025" />
           <CategoryRow title="Hollywood Action" searchTerm="action" />
           <CategoryRow title="Romantic Comedies" searchTerm="romantic comedy" />
@@ -67,7 +37,15 @@ const HomePage = () => {
       ) : (
         <>
           <h2 className="search-results-title">Search Results for "{searchTerm}"</h2>
-          <MovieList movies={searchResults} />
+          {isError ? (
+            <p className="status-message error">{error.message}</p>
+          ) : isFetching || query !== searchTerm.trim() ? (
+            <p className="status-message">Searching...</p>
+          ) : searchResults.length === 0 ? (
+            <p className="status-message">No movies found.</p>
+          ) : (
+            <MovieList movies={searchResults} />
+          )}
         </>
       )}
     </div>

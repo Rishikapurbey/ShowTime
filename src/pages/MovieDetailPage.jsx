@@ -1,23 +1,20 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import { getMovieDetails, posterOrPlaceholder } from '../api/omdb';
 import { AuthContext } from '../context/AuthContext';
 import './MovieDetailPage.css';
 
 const MovieDetailPage = () => {
   const { id } = useParams();
-  const [movieDetails, setMovieDetails] = useState(null);
   const { watchlist, addToWatchlist, removeFromWatchlist, currentUser } = useContext(AuthContext);
 
   const isMovieInWatchlist = watchlist.some(movie => movie.imdbID === id);
 
-  useEffect(() => {
-    const fetchDetails = async () => {
-      const response = await axios.get(`http://www.omdbapi.com/?i=${id}&apikey=595c2e8f&plot=full`);
-      setMovieDetails(response.data);
-    };
-    fetchDetails();
-  }, [id]);
+  const { data: movieDetails, isLoading, isError } = useQuery({
+    queryKey: ['movie', id],
+    queryFn: () => getMovieDetails(id),
+  });
 
   const handleWatchlistClick = () => {
     if (isMovieInWatchlist) {
@@ -33,14 +30,29 @@ const MovieDetailPage = () => {
     }
   };
 
-  if (!movieDetails) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="detail-page">
+        <p className="status-message">Loading...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="detail-page">
+        <Link to="/" className="back-link">← Back to Home</Link>
+        <p className="status-message error">Couldn't load this movie. It may not exist, or the server is unavailable.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="detail-page">
       <Link to="/" className="back-link">← Back to Home</Link>
       <div className="detail-content">
         <div className="detail-left-column">
-          <img src={movieDetails.Poster} alt={movieDetails.Title} className="detail-poster" />
+          <img src={posterOrPlaceholder(movieDetails.Poster)} alt={movieDetails.Title} className="detail-poster" />
           {currentUser && (
             <button onClick={handleWatchlistClick} className="watchlist-button">
               {isMovieInWatchlist ? '✓ Added to Watchlist' : '+ Add to Watchlist'}

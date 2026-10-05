@@ -8,3 +8,12 @@
 html, body, #root {
   height: 100%;
 }
+.status-message {
+  color: #aaa;
+  padding: 0 40px;
+  font-family: sans-serif;
+}
+
+.status-message.error {
+  color: #e57373;
+}

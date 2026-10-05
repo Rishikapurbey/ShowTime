@@ -43,7 +43,12 @@ To run this project on your own machine:
     ```bash
     npm install
     ```
-4.  Start the development server:
+4.  Create a `.env.local` file with your OMDb API key (get one free at https://www.omdbapi.com/apikey.aspx):
+    ```bash
+    cp .env.example .env.local
+    # then edit VITE_OMDB_KEY in .env.local
+    ```
+5.  Start the development server:
     ```bash
     npm run dev
     ```
