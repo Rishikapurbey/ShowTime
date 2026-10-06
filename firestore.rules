@@ -1,0 +1,19 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // A signed-in user can read and write only their own watchlist.
+    match /users/{userId}/watchlist/{imdbID} {
+      allow read, delete: if request.auth != null && request.auth.uid == userId;
+      allow create, update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.imdbID == imdbID
+        && request.resource.data.keys().hasOnly(['imdbID', 'Title', 'Poster', 'Year', 'addedAt']);
+    }
+
+    // Everything else is closed.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

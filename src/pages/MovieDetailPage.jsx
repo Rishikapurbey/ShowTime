@@ -1,8 +1,8 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getMovieDetails, posterOrPlaceholder, showPlaceholderOnError } from '../api/omdb';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/auth-context';
 import './MovieDetailPage.css';
 
 // OMDb uses the string "N/A" for missing fields.
@@ -16,7 +16,7 @@ const RATING_SOURCES = {
 
 const MovieDetailPage = () => {
   const { id } = useParams();
-  const { watchlist, addToWatchlist, removeFromWatchlist, currentUser } = useContext(AuthContext);
+  const { watchlist, addToWatchlist, removeFromWatchlist, currentUser } = useAuth();
 
   const isMovieInWatchlist = watchlist.some(movie => movie.imdbID === id);
 

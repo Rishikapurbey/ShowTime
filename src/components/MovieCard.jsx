@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { posterOrPlaceholder, showPlaceholderOnError } from '../api/omdb';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/auth-context';
 import './MovieCard.css';
 
 const MovieCard = ({ movie }) => {
-  const { currentUser, watchlist, addToWatchlist, removeFromWatchlist } = useContext(AuthContext);
+  const { currentUser, watchlist, addToWatchlist, removeFromWatchlist } = useAuth();
   const poster = posterOrPlaceholder(movie.Poster);
   const inWatchlist = watchlist.some((m) => m.imdbID === movie.imdbID);
 

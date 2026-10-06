@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/auth-context';
 import './Header.css';
 
 const Header = () => {
-  const { currentUser, logout } = useContext(AuthContext);
+  const { currentUser, authLoading, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -13,16 +13,9 @@ const Header = () => {
     return null; 
   }
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  const getDisplayName = (email) => {
-    if (!email) return '';
-    const namePart = email.split('@')[0];
-    const cleanName = namePart.replace(/[^a-zA-Z]/g, '');
-    return cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
   };
 
   
@@ -32,9 +25,9 @@ const Header = () => {
         <h1>ShowTime</h1>
       </Link>
       <div className="header-nav">
-        {currentUser ? (
+        {authLoading ? null : currentUser ? (
           <>
-            <span className="welcome-message">Welcome, {getDisplayName(currentUser.email)}</span>
+            <span className="welcome-message">Welcome, {currentUser.name}</span>
             <Link to="/watchlist" className="nav-link">Watchlist</Link>
             <button onClick={handleLogout} className="logout-button">Logout</button>
           </>

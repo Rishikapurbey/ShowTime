@@ -22,3 +22,9 @@
     padding: 20px 16px;
   }
 }
+
+.watchlist-count {
+  color: #888;
+  font-size: 1.5rem;
+  font-weight: normal;
+}

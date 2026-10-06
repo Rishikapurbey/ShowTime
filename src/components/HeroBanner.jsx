@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getMovieDetails, posterOrPlaceholder, showPlaceholderOnError } from '../api/omdb';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/auth-context';
 import './HeroBanner.css';
 
 // OMDb has no "trending" endpoint, so the featured movie rotates daily through a hand-picked list.
@@ -25,7 +25,7 @@ const dayNumber = Math.floor(Date.now() / (24 * 60 * 60 * 1000));
 const featuredId = FEATURED_IDS[dayNumber % FEATURED_IDS.length];
 
 const HeroBanner = () => {
-  const { currentUser, watchlist, addToWatchlist, removeFromWatchlist } = useContext(AuthContext);
+  const { currentUser, watchlist, addToWatchlist, removeFromWatchlist } = useAuth();
   const { data: movie, isLoading, isError } = useQuery({
     queryKey: ['movie', featuredId],
     queryFn: () => getMovieDetails(featuredId),
