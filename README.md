@@ -179,7 +179,7 @@ To deploy your own copy:
 
 1. Import the repository in Vercel. It detects Vite, so the default build settings work as they are.
 2. Add the same `VITE_*` environment variables in the project settings. You can paste the contents of `.env.local` straight into the first field.
-3. [`vercel.json`](vercel.json) sends every path to `index.html`, so deep links such as `/movie/tt0468569` and `/u/your_name` work on refresh. ([`public/_redirects`](public/_redirects) does the same on Netlify.)
+3. [`vercel.json`](vercel.json) sends every path to `index.html`, so deep links such as `/movie/tt0468569` and `/u/your_name` work on refresh.
 4. Add the site's domain to Firebase **Authorized domains** (see [step 3](#3-set-up-firebase-optional)).
 
 ## Acknowledgements
