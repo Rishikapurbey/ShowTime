@@ -1,33 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  sendPasswordResetEmail,
-  updateProfile,
-  signOut,
-} from 'firebase/auth';
-import {
-  collection,
-  doc,
-  setDoc,
-  deleteDoc,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  writeBatch,
-} from 'firebase/firestore';
-import { auth, db, isFirebaseConfigured } from '../lib/firebase';
+import { isFirebaseConfigured, loadAuth, loadFirestore } from '../lib/firebase';
 import { AuthContext } from './auth-context';
 
 // Each user's watchlist lives at users/{uid}/watchlist/{imdbID}.
-const watchlistRef = (uid) => collection(db, 'users', uid, 'watchlist');
+const watchlistRef = (fs, uid) => fs.collection(fs.db, 'users', uid, 'watchlist');
 
 const notConfigured = () =>
   Promise.reject(Object.assign(new Error('Firebase is not configured'), { code: 'app/not-configured' }));
+
+// Runs fn with the loaded Auth SDK, or rejects the way a failed sign-in would if accounts are off.
+const withAuth = (fn) => (isFirebaseConfigured ? loadAuth().then(fn) : notConfigured());
 
 const toUser = (firebaseUser) => ({
   uid: firebaseUser.uid,
@@ -37,16 +19,22 @@ const toUser = (firebaseUser) => ({
 
 // Before real accounts, watchlists were kept in this browser's localStorage under
 // "<email>_watchlist". Copy one into Firestore the first time that email signs in.
-const importLegacyWatchlist = async (user) => {
+const importLegacyWatchlist = async (fs, user) => {
   const key = `${user.email}_watchlist`;
   const stored = localStorage.getItem(key);
   localStorage.removeItem('showtime_user');
   if (!stored) return;
 
   const movies = JSON.parse(stored);
-  const batch = writeBatch(db);
+  const batch = fs.writeBatch(fs.db);
   for (const { imdbID, Title, Poster, Year } of movies) {
-    batch.set(doc(watchlistRef(user.uid), imdbID), { imdbID, Title, Poster, Year, addedAt: serverTimestamp() });
+    batch.set(fs.doc(watchlistRef(fs, user.uid), imdbID), {
+      imdbID,
+      Title,
+      Poster,
+      Year,
+      addedAt: fs.serverTimestamp(),
+    });
   }
   await batch.commit();
   localStorage.removeItem(key);
@@ -60,10 +48,26 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (!isFirebaseConfigured) return;
-    return onAuthStateChanged(auth, (firebaseUser) => {
-      setCurrentUser(firebaseUser ? toUser(firebaseUser) : null);
-      setAuthLoading(false);
-    });
+    let unsubscribe;
+    let cancelled = false;
+
+    loadAuth()
+      .then(({ auth, onAuthStateChanged }) => {
+        if (cancelled) return;
+        unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+          setCurrentUser(firebaseUser ? toUser(firebaseUser) : null);
+          setAuthLoading(false);
+        });
+      })
+      .catch((error) => {
+        console.error('Could not load Firebase Auth:', error);
+        setAuthLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
   }, []);
 
   useEffect(() => {
@@ -71,55 +75,74 @@ export const AuthProvider = ({ children }) => {
       setWatchlist([]);
       return;
     }
+    let unsubscribe;
+    let cancelled = false;
 
-    importLegacyWatchlist(currentUser).catch((error) =>
-      console.error('Could not import the old watchlist:', error)
-    );
+    loadFirestore()
+      .then((fs) => {
+        if (cancelled) return;
 
-    const q = query(watchlistRef(currentUser.uid), orderBy('addedAt', 'desc'));
-    return onSnapshot(
-      q,
-      (snapshot) => setWatchlist(snapshot.docs.map((d) => d.data({ serverTimestamps: 'estimate' }))),
-      (error) => console.error('Watchlist sync failed:', error)
-    );
+        importLegacyWatchlist(fs, currentUser).catch((error) =>
+          console.error('Could not import the old watchlist:', error)
+        );
+
+        const q = fs.query(watchlistRef(fs, currentUser.uid), fs.orderBy('addedAt', 'desc'));
+        unsubscribe = fs.onSnapshot(
+          q,
+          (snapshot) => setWatchlist(snapshot.docs.map((d) => d.data({ serverTimestamps: 'estimate' }))),
+          (error) => console.error('Watchlist sync failed:', error)
+        );
+      })
+      .catch((error) => console.error('Could not load Firestore:', error));
+
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
   }, [currentUser]);
 
   const login = (email, password) =>
-    isFirebaseConfigured ? signInWithEmailAndPassword(auth, email, password) : notConfigured();
+    withAuth(({ auth, signInWithEmailAndPassword }) => signInWithEmailAndPassword(auth, email, password));
 
-  const signup = async (name, email, password) => {
-    if (!isFirebaseConfigured) return notConfigured();
-    const { user } = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(user, { displayName: name });
-    // onAuthStateChanged fired before the name was set, so refresh it.
-    setCurrentUser(toUser(user));
-  };
+  const signup = (name, email, password) =>
+    withAuth(async ({ auth, createUserWithEmailAndPassword, updateProfile }) => {
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(user, { displayName: name });
+      // onAuthStateChanged fired before the name was set, so refresh it.
+      setCurrentUser(toUser(user));
+    });
 
+  // Auth is already loaded by the time anyone can click this, so the popup still opens
+  // within the click's user-activation window and isn't blocked.
   const loginWithGoogle = () =>
-    isFirebaseConfigured ? signInWithPopup(auth, new GoogleAuthProvider()) : notConfigured();
+    withAuth(({ auth, signInWithPopup, GoogleAuthProvider }) => signInWithPopup(auth, new GoogleAuthProvider()));
 
   const resetPassword = (email) =>
-    isFirebaseConfigured ? sendPasswordResetEmail(auth, email) : notConfigured();
+    withAuth(({ auth, sendPasswordResetEmail }) => sendPasswordResetEmail(auth, email));
 
-  const logout = () => signOut(auth);
+  const logout = () => withAuth(({ auth, signOut }) => signOut(auth));
 
   // Firestore applies writes locally first, so the UI updates instantly via onSnapshot.
   const addToWatchlist = ({ imdbID, Title, Poster, Year }) => {
     if (!currentUser) return;
-    setDoc(doc(watchlistRef(currentUser.uid), imdbID), {
-      imdbID,
-      Title,
-      Poster,
-      Year,
-      addedAt: serverTimestamp(),
-    }).catch((error) => console.error('Could not add to watchlist:', error));
+    loadFirestore()
+      .then((fs) =>
+        fs.setDoc(fs.doc(watchlistRef(fs, currentUser.uid), imdbID), {
+          imdbID,
+          Title,
+          Poster,
+          Year,
+          addedAt: fs.serverTimestamp(),
+        })
+      )
+      .catch((error) => console.error('Could not add to watchlist:', error));
   };
 
   const removeFromWatchlist = (imdbID) => {
     if (!currentUser) return;
-    deleteDoc(doc(watchlistRef(currentUser.uid), imdbID)).catch((error) =>
-      console.error('Could not remove from watchlist:', error)
-    );
+    loadFirestore()
+      .then((fs) => fs.deleteDoc(fs.doc(watchlistRef(fs, currentUser.uid), imdbID)))
+      .catch((error) => console.error('Could not remove from watchlist:', error));
   };
 
   const value = {
