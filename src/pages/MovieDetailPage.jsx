@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getMovieDetails, posterOrPlaceholder, showPlaceholderOnError } from '../api/omdb';
 import { useAuth } from '../context/auth-context';
+import WatchedControls from '../components/WatchedControls';
 import './MovieDetailPage.css';
 
 // OMDb uses the string "N/A" for missing fields.
@@ -18,7 +19,8 @@ const MovieDetailPage = () => {
   const { id } = useParams();
   const { watchlist, addToWatchlist, removeFromWatchlist, currentUser } = useAuth();
 
-  const isMovieInWatchlist = watchlist.some(movie => movie.imdbID === id);
+  const watchlistEntry = watchlist.find(movie => movie.imdbID === id);
+  const isMovieInWatchlist = Boolean(watchlistEntry);
 
   const { data: movieDetails, isLoading, isError } = useQuery({
     queryKey: ['movie', id],
@@ -99,6 +101,7 @@ const MovieDetailPage = () => {
                 {isMovieInWatchlist ? '✓ Added to Watchlist' : '+ Add to Watchlist'}
               </button>
             )}
+            {watchlistEntry && <WatchedControls movie={watchlistEntry} />}
           </div>
 
           <div className="detail-info">

@@ -145,6 +145,22 @@ export const AuthProvider = ({ children }) => {
       .catch((error) => console.error('Could not remove from watchlist:', error));
   };
 
+  // Firestore applies writes locally first, so the UI updates instantly via onSnapshot.
+  const updateWatchlistEntry = (imdbID, fields) => {
+    if (!currentUser) return;
+    loadFirestore()
+      .then((fs) => fs.updateDoc(fs.doc(watchlistRef(fs, currentUser.uid), imdbID), fields))
+      .catch((error) => console.error('Could not update watchlist entry:', error));
+  };
+
+  // A rating only makes sense for something you've seen, so rating marks a movie watched
+  // and un-marking it clears the rating.
+  const setWatched = (imdbID, watched) =>
+    updateWatchlistEntry(imdbID, watched ? { watched: true } : { watched: false, rating: null });
+
+  const setRating = (imdbID, rating) =>
+    updateWatchlistEntry(imdbID, rating ? { rating, watched: true } : { rating: null });
+
   const value = {
     currentUser,
     authLoading,
@@ -156,6 +172,8 @@ export const AuthProvider = ({ children }) => {
     watchlist,
     addToWatchlist,
     removeFromWatchlist,
+    setWatched,
+    setRating,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

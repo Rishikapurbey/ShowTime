@@ -4,7 +4,7 @@ import { posterOrPlaceholder, showPlaceholderOnError } from '../api/omdb';
 import { useAuth } from '../context/auth-context';
 import './MovieCard.css';
 
-const MovieCard = ({ movie }) => {
+const MovieCard = ({ movie, actions }) => {
   const { currentUser, watchlist, addToWatchlist, removeFromWatchlist } = useAuth();
   const poster = posterOrPlaceholder(movie.Poster);
   const inWatchlist = watchlist.some((m) => m.imdbID === movie.imdbID);
@@ -38,6 +38,7 @@ const MovieCard = ({ movie }) => {
         <div className="movie-info">
           <h3>{movie.Title}</h3>
           <p>{movie.Year}</p>
+          {actions}
         </div>
       </div>
     </Link>

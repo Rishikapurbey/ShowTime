@@ -2,13 +2,21 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // watched and rating are optional; rating is 1-5 stars, or null when cleared.
+    function validEntry(data, imdbID) {
+      return data.imdbID == imdbID
+        && data.keys().hasOnly(['imdbID', 'Title', 'Poster', 'Year', 'addedAt', 'watched', 'rating'])
+        && data.get('watched', false) is bool
+        && (data.get('rating', null) == null
+          || (data.rating is int && data.rating >= 1 && data.rating <= 5));
+    }
+
     // A signed-in user can read and write only their own watchlist.
     match /users/{userId}/watchlist/{imdbID} {
       allow read, delete: if request.auth != null && request.auth.uid == userId;
       allow create, update: if request.auth != null
         && request.auth.uid == userId
-        && request.resource.data.imdbID == imdbID
-        && request.resource.data.keys().hasOnly(['imdbID', 'Title', 'Poster', 'Year', 'addedAt']);
+        && validEntry(request.resource.data, imdbID);
     }
 
     // Everything else is closed.

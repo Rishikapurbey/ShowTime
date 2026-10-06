@@ -6,7 +6,8 @@ const SKELETON_COUNT = 8;
 
 // layout="row": one horizontally scrolling line with arrow buttons (homepage categories).
 // layout="grid": wrapping grid (search results, watchlist).
-const MovieList = ({ movies, isLoading = false, layout = 'row' }) => {
+// renderActions(movie), if given, adds extra controls under each card's title.
+const MovieList = ({ movies, isLoading = false, layout = 'row', renderActions }) => {
   const listRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -49,7 +50,7 @@ const MovieList = ({ movies, isLoading = false, layout = 'row' }) => {
                 <div className="skeleton-line short" />
               </div>
             ))
-          : movies.map((movie) => <MovieCard key={movie.imdbID} movie={movie} />)}
+          : movies.map((movie) => <MovieCard key={movie.imdbID} movie={movie} actions={renderActions?.(movie)} />)}
       </div>
       {canScrollRight && (
         <button className="row-arrow right" onClick={() => scrollBy(1)} aria-label="Scroll right">

@@ -28,3 +28,38 @@
   font-size: 1.5rem;
   font-weight: normal;
 }
+
+.watchlist-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #333;
+}
+
+.watchlist-tab {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #aaa;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  padding: 8px 14px;
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.watchlist-tab:hover {
+  color: #fff;
+}
+
+.watchlist-tab.active {
+  color: #fff;
+  border-bottom-color: #e50914;
+}
+
+.tab-count {
+  color: #888;
+  font-size: 0.9rem;
+  margin-left: 4px;
+}
