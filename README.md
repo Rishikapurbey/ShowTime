@@ -25,6 +25,7 @@ Live Deployed App: [https://harmonious-maamoul-e4854c.netlify.app/](https://harm
 -   Auth & Database: Firebase Authentication, Cloud Firestore
 -   State Management: React Hooks (`useState`, `useEffect`, `useContext`)
 -   Build Tool: Vite
+-   Testing: Vitest, React Testing Library
 
 ---
 
@@ -59,3 +60,12 @@ To run this project on your own machine:
     npm run dev
     ```
 
+
+## Running Tests
+
+Tests use [Vitest](https://vitest.dev/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/), and don't need Firebase or an OMDb key:
+
+```bash
+npm test             # run once
+npm run test:watch   # re-run on every change
+```

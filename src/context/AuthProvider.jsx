@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { isFirebaseConfigured, loadAuth, loadFirestore } from '../lib/firebase';
+import { watchedFields, ratingFields } from '../lib/watchlist';
 import { AuthContext } from './auth-context';
 
 // Each user's watchlist lives at users/{uid}/watchlist/{imdbID}.
@@ -153,13 +154,9 @@ export const AuthProvider = ({ children }) => {
       .catch((error) => console.error('Could not update watchlist entry:', error));
   };
 
-  // A rating only makes sense for something you've seen, so rating marks a movie watched
-  // and un-marking it clears the rating.
-  const setWatched = (imdbID, watched) =>
-    updateWatchlistEntry(imdbID, watched ? { watched: true } : { watched: false, rating: null });
+  const setWatched = (imdbID, watched) => updateWatchlistEntry(imdbID, watchedFields(watched));
 
-  const setRating = (imdbID, rating) =>
-    updateWatchlistEntry(imdbID, rating ? { rating, watched: true } : { rating: null });
+  const setRating = (imdbID, rating) => updateWatchlistEntry(imdbID, ratingFields(rating));
 
   const value = {
     currentUser,
