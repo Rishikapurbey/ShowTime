@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '../context/auth-context';
 import MovieList from '../components/MovieList';
 import WatchedControls from '../components/WatchedControls';
+import SharePanel from '../components/SharePanel';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import './WatchlistPage.css';
 
@@ -92,6 +93,7 @@ const WatchlistPage = () => {
   return (
     <div className="watchlist-page">
       <h1>My Watchlist{watchlist.length > 0 && <span className="watchlist-count"> · {watchlist.length}</span>}</h1>
+      <SharePanel />
 
       {watchlist.length > 0 ? (
         <>

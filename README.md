@@ -15,6 +15,9 @@ Live Deployed App: [https://harmonious-maamoul-e4854c.netlify.app/](https://harm
 -   Real-Time Search: Dynamically fetches and displays results from the OMDb API as the user types.
 -   Detailed Movie Pages: Clicking a movie card navigates to a dedicated page with detailed information like plot, actors, and ratings.
 -   User Accounts & Synced Watchlist: Email/password and Google sign-in with Firebase Auth. Each user's watchlist is stored in Firestore, so it follows them across devices.
+-   Watched & Ratings: Mark movies as watched, rate them 1–5 stars, and sort, filter and search your watchlist.
+-   Shareable Watchlist: Turn on a public link (e.g. `/u/your_name`) so anyone can see your lists and ratings; switch it off any time.
+-   Recently Viewed: A homepage row of the movies you opened last, synced to your account.
 -   Responsive Design: A clean and modern user interface that works seamlessly on desktop and mobile devices.
 
 ---

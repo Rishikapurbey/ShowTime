@@ -1,9 +1,15 @@
 import React from 'react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithAuth } from '../test/renderWithAuth';
 import WatchlistPage from './WatchlistPage';
+
+// The share panel has its own tests; keep these away from Firestore.
+vi.mock('../hooks/useShareProfile', () => ({
+  default: () => ({ profile: undefined, claimUsername: vi.fn(), setPublic: vi.fn() }),
+  UsernameTaken: class extends Error {},
+}));
 
 // Newest-added first, the order Firestore returns it in.
 const WATCHLIST = [

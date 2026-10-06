@@ -136,3 +136,30 @@
     flex-basis: 100%;
   }
 }
+
+/* Beats the grey year style in MovieCard.css (.movie-info p). */
+.movie-info .public-rating {
+  color: #f5c518;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  margin-top: 8px;
+}
+
+.public-rating-empty {
+  color: #555;
+}
+
+.public-owner-note {
+  color: #aaa;
+  margin: -10px 0 20px;
+}
+
+.public-owner-note a {
+  color: #fff;
+}
+
+/* The header's login-button style is an inline link; give it room under the message. */
+.watchlist-message .login-button {
+  display: inline-block;
+  margin-top: 12px;
+}

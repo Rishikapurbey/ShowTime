@@ -11,6 +11,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SignupPage = lazy(() => import('./pages/SignupPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const WatchlistPage = lazy(() => import('./pages/WatchlistPage'));
+const PublicWatchlistPage = lazy(() => import('./pages/PublicWatchlistPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/watchlist" element={<WatchlistPage />} />
+            <Route path="/u/:username" element={<PublicWatchlistPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
