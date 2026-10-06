@@ -1,0 +1,148 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 420px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.hero-skeleton {
+  background: linear-gradient(90deg, #1a1a1a 25%, #242424 50%, #1a1a1a 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* OMDb has no backdrop images, so a blurred, darkened poster fills the banner. */
+.hero-backdrop {
+  position: absolute;
+  inset: -60px;
+  background-size: cover;
+  background-position: center 30%;
+  filter: blur(50px) brightness(0.4);
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, #141414);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 50px 40px 70px;
+}
+
+.hero-poster {
+  width: 220px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+}
+
+.hero-text {
+  max-width: 650px;
+}
+
+.hero-label {
+  display: inline-block;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #e50914;
+  margin-bottom: 8px;
+}
+
+.hero-text h1 {
+  font-size: 3rem;
+  line-height: 1.05;
+  margin-bottom: 12px;
+}
+
+.hero-meta {
+  font-family: sans-serif;
+  color: #ccc;
+  margin-bottom: 16px;
+}
+
+.hero-rating {
+  color: #f5c518;
+  font-weight: bold;
+  margin-right: 12px;
+}
+
+.hero-plot {
+  font-family: sans-serif;
+  line-height: 1.6;
+  color: #ddd;
+  margin-bottom: 24px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-button {
+  padding: 12px 28px;
+  border-radius: 4px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.05rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.hero-button.primary {
+  background-color: #e50914;
+  color: #fff;
+  border: 1px solid #e50914;
+}
+
+.hero-button.primary:hover {
+  background-color: #fff;
+  color: #141414;
+  border-color: #fff;
+}
+
+.hero-button.secondary {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.hero-button.secondary:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: 0;
+  }
+
+  .hero-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 30px 16px 60px;
+  }
+
+  .hero-poster {
+    width: 140px;
+  }
+
+  .hero-text h1 {
+    font-size: 2rem;
+  }
+}

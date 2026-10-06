@@ -35,8 +35,9 @@ const unwrap = (data) => {
 // OMDb returns 10 results per page.
 export const RESULTS_PER_PAGE = 10;
 
-export const searchMovies = async (query, { year, page = 1 } = {}) => {
-  const { data } = await omdb.get('', { params: { s: query, y: year, page } });
+// type: 'movie' | 'series' | undefined (both).
+export const searchMovies = async (query, { year, type, page = 1 } = {}) => {
+  const { data } = await omdb.get('', { params: { s: query, y: year, type, page } });
   if (data.Response === 'False' && data.Error === 'Movie not found!') {
     return { movies: [], totalResults: 0 };
   }
