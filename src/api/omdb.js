@@ -17,6 +17,13 @@ export const PLACEHOLDER_POSTER =
 export const posterOrPlaceholder = (poster) =>
   !poster || poster === 'N/A' ? PLACEHOLDER_POSTER : poster;
 
+// Some OMDb poster URLs are dead links; swap in the placeholder when one fails to load.
+export const showPlaceholderOnError = (e) => {
+  if (e.currentTarget.src !== PLACEHOLDER_POSTER) {
+    e.currentTarget.src = PLACEHOLDER_POSTER;
+  }
+};
+
 // OMDb returns 200 with { Response: "False", Error } for "not found" style errors.
 const unwrap = (data) => {
   if (data.Response === 'False') {
@@ -25,12 +32,16 @@ const unwrap = (data) => {
   return data;
 };
 
+// OMDb returns 10 results per page.
+export const RESULTS_PER_PAGE = 10;
+
 export const searchMovies = async (query, { year, page = 1 } = {}) => {
   const { data } = await omdb.get('', { params: { s: query, y: year, page } });
   if (data.Response === 'False' && data.Error === 'Movie not found!') {
-    return [];
+    return { movies: [], totalResults: 0 };
   }
-  return unwrap(data).Search;
+  const { Search, totalResults } = unwrap(data);
+  return { movies: Search, totalResults: Number(totalResults) };
 };
 
 export const getMovieDetails = async (imdbID) => {

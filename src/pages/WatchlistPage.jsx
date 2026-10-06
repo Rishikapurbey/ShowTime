@@ -23,7 +23,7 @@ const WatchlistPage = () => {
     <div className="watchlist-page">
       <h1>My Watchlist</h1>
       {watchlist.length > 0 ? (
-        <MovieList movies={watchlist} />
+        <MovieList movies={watchlist} layout="grid" />
       ) : (
         <p className="watchlist-message">Your watchlist is empty. Add some movies!</p>
       )}

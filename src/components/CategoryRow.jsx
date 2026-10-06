@@ -5,17 +5,17 @@ import MovieList from './MovieList';
 import './CategoryRow.css';
 
 const CategoryRow = ({ title, searchTerm, year }) => {
-  const { data: movies = [], isError } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['category', searchTerm, year],
     queryFn: () => searchMovies(searchTerm, { year }),
   });
 
-  if (isError) return null;
+  if (isError || (data && data.movies.length === 0)) return null;
 
   return (
     <div className="category-row">
       <h2>{title}</h2>
-      <MovieList movies={movies} />
+      <MovieList movies={data?.movies ?? []} isLoading={isLoading} />
     </div>
   );
 };

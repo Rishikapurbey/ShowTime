@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getMovieDetails, posterOrPlaceholder } from '../api/omdb';
+import { getMovieDetails, posterOrPlaceholder, showPlaceholderOnError } from '../api/omdb';
 import { AuthContext } from '../context/AuthContext';
 import './MovieDetailPage.css';
 
@@ -93,7 +93,7 @@ const MovieDetailPage = () => {
 
         <div className="detail-content">
           <div className="detail-left-column">
-            <img src={poster} alt={movieDetails.Title} className="detail-poster" />
+            <img src={poster} alt={movieDetails.Title} className="detail-poster" onError={showPlaceholderOnError} />
             {currentUser && (
               <button onClick={handleWatchlistClick} className="watchlist-button">
                 {isMovieInWatchlist ? '✓ Added to Watchlist' : '+ Add to Watchlist'}

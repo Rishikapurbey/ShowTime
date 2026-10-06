@@ -11,7 +11,7 @@
 
 
 .movie-card:hover {
-  transform: scale(1.15); 
+  transform: scale(1.08);
   z-index: 10; 
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7); 
 }
@@ -42,4 +42,62 @@
 }
 .movie-card-link {
   text-decoration: none; 
+}
+.card-watchlist-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+/* Always visible once added, or on touch devices; otherwise shown on hover. */
+.movie-card:hover .card-watchlist-button,
+.card-watchlist-button:focus-visible,
+.card-watchlist-button.added {
+  opacity: 1;
+}
+
+.card-watchlist-button.added {
+  background-color: #e50914;
+  border-color: #e50914;
+}
+
+.card-watchlist-button:hover {
+  background-color: #e50914;
+  border-color: #e50914;
+}
+
+@media (hover: none) {
+  .card-watchlist-button {
+    opacity: 1;
+  }
+}
+
+/* In grids the card fills its column instead of a fixed 200px. */
+.movie-grid .movie-card-link {
+  width: 100%;
+  max-width: 200px;
+}
+
+.movie-grid .movie-card {
+  width: 100%;
+}
+
+.movie-grid .movie-card img {
+  height: auto;
+  aspect-ratio: 2 / 3;
+}
+
+.movie-card {
+  flex-shrink: 0;
 }

@@ -8,3 +8,42 @@
   margin-bottom: 20px;
   padding: 0 40px;
 }
+.search-results-count {
+  color: #888;
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.load-more {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0 10px;
+}
+
+.load-more button {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 25px;
+  padding: 10px 36px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.load-more button:hover:not(:disabled) {
+  border-color: #e50914;
+  background-color: #e50914;
+}
+
+.load-more button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+@media (max-width: 768px) {
+  .search-results-title {
+    padding: 0 16px;
+  }
+}

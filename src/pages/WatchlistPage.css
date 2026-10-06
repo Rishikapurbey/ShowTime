@@ -12,3 +12,13 @@
   margin-top: 50px;
   color: #ccc;
 }
+.watchlist-page .movie-grid {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+@media (max-width: 768px) {
+  .watchlist-page {
+    padding: 20px 16px;
+  }
+}

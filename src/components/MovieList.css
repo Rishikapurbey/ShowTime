@@ -1,13 +1,117 @@
+.movie-list-wrapper {
+  position: relative;
+}
+
 .movie-list {
   display: flex;
   overflow-x: auto;
   overflow-y: hidden;
-  flex-wrap: nowrap; 
+  flex-wrap: nowrap;
   gap: 15px;
-  padding: 10px 40px;
+  /* Room for the hover zoom so the card isn't clipped. */
+  padding: 20px 40px;
+  scrollbar-width: none;
 }
-
 
 .movie-list::-webkit-scrollbar {
   display: none;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  justify-items: center;
+  gap: 25px 15px;
+  padding: 10px 40px;
+}
+
+/* Arrows appear when hovering a row, on devices that have a mouse. */
+.row-arrow {
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  width: 40px;
+  z-index: 20;
+  border: none;
+  background-color: rgba(20, 20, 20, 0.7);
+  color: #fff;
+  font-size: 2.5rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+.row-arrow.left {
+  left: 0;
+}
+
+.row-arrow.right {
+  right: 0;
+}
+
+.movie-list-wrapper:hover .row-arrow,
+.row-arrow:focus-visible {
+  opacity: 1;
+}
+
+.row-arrow:hover {
+  background-color: rgba(20, 20, 20, 0.9);
+}
+
+@media (hover: none) {
+  .row-arrow {
+    display: none;
+  }
+}
+
+.movie-card-skeleton {
+  width: 200px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #1c1c1c;
+  padding-bottom: 15px;
+}
+
+.skeleton-poster,
+.skeleton-line {
+  background: linear-gradient(90deg, #222 25%, #2e2e2e 50%, #222 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.skeleton-poster {
+  height: 300px;
+}
+
+.skeleton-line {
+  height: 12px;
+  margin: 15px 15px 0;
+  border-radius: 4px;
+}
+
+.skeleton-line.short {
+  width: 40%;
+  margin-top: 8px;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .movie-list {
+    padding: 20px 16px;
+  }
+
+  .movie-grid {
+    padding: 10px 16px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
 }
