@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getMovieDetails, posterOrPlaceholder, showPlaceholderOnError } from '../api/omdb';
 import { useAuth } from '../context/auth-context';
+import { useRecentlyViewed } from '../context/recently-viewed-context';
 import WatchedControls from '../components/WatchedControls';
 import './MovieDetailPage.css';
 
@@ -18,6 +19,7 @@ const RATING_SOURCES = {
 const MovieDetailPage = () => {
   const { id } = useParams();
   const { watchlist, addToWatchlist, removeFromWatchlist, currentUser } = useAuth();
+  const { recordView } = useRecentlyViewed();
 
   const watchlistEntry = watchlist.find(movie => movie.imdbID === id);
   const isMovieInWatchlist = Boolean(watchlistEntry);
@@ -26,6 +28,10 @@ const MovieDetailPage = () => {
     queryKey: ['movie', id],
     queryFn: () => getMovieDetails(id),
   });
+
+  useEffect(() => {
+    if (movieDetails) recordView(movieDetails);
+  }, [movieDetails, recordView]);
 
   useEffect(() => {
     if (movieDetails) document.title = `${movieDetails.Title} (${movieDetails.Year}) · ShowTime`;

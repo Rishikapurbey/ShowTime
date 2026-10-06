@@ -7,6 +7,7 @@ import SearchBar from '../components/SearchBar';
 import MovieList from '../components/MovieList';
 import CategoryRow from '../components/CategoryRow';
 import HeroBanner from '../components/HeroBanner';
+import RecentlyViewedRow from '../components/RecentlyViewedRow';
 import './HomePage.css';
 
 const TYPE_FILTERS = [
@@ -76,6 +77,7 @@ const HomePage = () => {
 
       {!isSearching ? (
         <>
+          <RecentlyViewedRow />
           <CategoryRow title="Latest Movies" searchTerm="movie" year="2025" />
           <CategoryRow title="Hollywood Action" searchTerm="action" />
           <CategoryRow title="Romantic Comedies" searchTerm="romantic comedy" />

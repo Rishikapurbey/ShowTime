@@ -19,6 +19,16 @@ service cloud.firestore {
         && validEntry(request.resource.data, imdbID);
     }
 
+    // A signed-in user's recently viewed movies: one document holding at most 20.
+    match /users/{userId}/history/recent {
+      allow read, delete: if request.auth != null && request.auth.uid == userId;
+      allow create, update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['movies'])
+        && request.resource.data.movies is list
+        && request.resource.data.movies.size() <= 20;
+    }
+
     // Everything else is closed.
     match /{document=**} {
       allow read, write: if false;
