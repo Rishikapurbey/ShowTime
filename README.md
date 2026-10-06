@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/Rishikapurbey/ShowTime/actions/workflows/ci.yml/badge.svg)](https://github.com/Rishikapurbey/ShowTime/actions/workflows/ci.yml) ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white) ![Firebase](https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-FFCA28?logo=firebase&logoColor=black) ![Tests](https://img.shields.io/badge/tests-Vitest%20%2B%20Firestore%20rules-6E9F18?logo=vitest&logoColor=white)
 
-[**Live demo**](https://harmonious-maamoul-e4854c.netlify.app/) · [Features](#features) · [Getting started](#getting-started) · [Architecture](#architecture) · [Testing](#testing)
+[**Live demo**](https://show-time-chi.vercel.app/) · [Features](#features) · [Getting started](#getting-started) · [Architecture](#architecture) · [Testing](#testing)
 
 <img src="docs/screenshots/home.jpg" alt="ShowTime homepage with a featured movie banner, search bar and Recently Viewed row" width="100%">
 
@@ -62,7 +62,7 @@ The app also works without Firebase configured: browsing, search and movie pages
 | Accounts and database | Firebase Authentication, Cloud Firestore |
 | Build | Vite 7 |
 | Testing | Vitest, React Testing Library, `@firebase/rules-unit-testing` with the Firestore emulator |
-| CI and hosting | GitHub Actions, Netlify |
+| CI and hosting | GitHub Actions, Vercel |
 
 ## Getting started
 
@@ -173,11 +173,13 @@ npm run test:rules   # security rules tests in the Firestore emulator (needs Jav
 
 ## Deployment
 
-The app is a static site, configured for Netlify:
+The live site runs on [Vercel](https://vercel.com), which redeploys automatically on every push to `main`.
 
-1. **Build command** `npm run build`, **publish directory** `dist`.
-2. Add the same `VITE_*` environment variables in your site's settings.
-3. [`public/_redirects`](public/_redirects) sends every path to `index.html`, so deep links such as `/movie/tt0468569` and `/u/your_name` work on refresh.
+To deploy your own copy:
+
+1. Import the repository in Vercel. It detects Vite, so the default build settings work as they are.
+2. Add the same `VITE_*` environment variables in the project settings. You can paste the contents of `.env.local` straight into the first field.
+3. [`vercel.json`](vercel.json) sends every path to `index.html`, so deep links such as `/movie/tt0468569` and `/u/your_name` work on refresh. ([`public/_redirects`](public/_redirects) does the same on Netlify.)
 4. Add the site's domain to Firebase **Authorized domains** (see [step 3](#3-set-up-firebase-optional)).
 
 ## Acknowledgements
