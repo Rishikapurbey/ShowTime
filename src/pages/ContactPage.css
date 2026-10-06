@@ -46,3 +46,28 @@
 .contact-method a:hover {
   color: #e50914;
 }
+/* Phones: less padding, stack the contact methods, and let the email address wrap. */
+@media (max-width: 600px) {
+  .contact-page {
+    padding: 24px 16px;
+  }
+
+  .contact-container {
+    padding: 28px 20px;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .contact-container h1 {
+    font-size: 2rem;
+  }
+
+  .contact-methods {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .contact-method a {
+    overflow-wrap: anywhere;
+  }
+}

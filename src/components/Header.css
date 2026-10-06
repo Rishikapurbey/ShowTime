@@ -47,6 +47,11 @@
   font-family: sans-serif;
   font-size: 1.1rem;
   font-weight: bold;
+  /* Long names shouldn't push the nav off screen. */
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .nav-link {
@@ -76,4 +81,31 @@
 .logout-button:hover {
   background-color: #fff;
   color: #111;
+}
+
+/* Phones: the greeting is the first thing to go; navigation stays. */
+@media (max-width: 640px) {
+  .welcome-message {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .header h1 {
+    font-size: 1.9rem;
+  }
+
+  .header-nav {
+    gap: 14px;
+  }
+
+  .logout-button,
+  .login-button {
+    padding: 6px 12px;
+  }
 }
