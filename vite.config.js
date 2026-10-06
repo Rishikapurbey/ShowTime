@@ -6,6 +6,8 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'jsdom',
+    // Firestore rules tests need the emulator; they run separately with `npm run test:rules`.
+    include: ['src/**/*.test.{js,jsx}'],
     setupFiles: './src/test/setup.js',
   },
   build: {

@@ -2,6 +2,16 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedInAs(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // True while this user has their watchlist switched to public.
+    function isShared(uid) {
+      let profile = /databases/$(database)/documents/profiles/$(uid);
+      return exists(profile) && get(profile).data.public == true;
+    }
+
     // watched and rating are optional; rating is 1-5 stars, or null when cleared.
     function validEntry(data, imdbID) {
       return data.imdbID == imdbID
@@ -11,9 +21,10 @@ service cloud.firestore {
           || (data.rating is int && data.rating >= 1 && data.rating <= 5));
     }
 
-    // A signed-in user can read and write only their own watchlist.
+    // A user can read and write only their own watchlist; anyone can read it while it's shared.
     match /users/{userId}/watchlist/{imdbID} {
-      allow read, delete: if request.auth != null && request.auth.uid == userId;
+      allow read: if signedInAs(userId) || isShared(userId);
+      allow delete: if signedInAs(userId);
       allow create, update: if request.auth != null
         && request.auth.uid == userId
         && validEntry(request.resource.data, imdbID);
@@ -27,6 +38,39 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['movies'])
         && request.resource.data.movies is list
         && request.resource.data.movies.size() <= 20;
+    }
+
+    // Share-link names: usernames/{name} = { uid }. Each name belongs to one user, and the
+    // user's profile must point at it in the same write, so nobody can hold more than one.
+    // Anyone can look up a single name (that's how a link is opened), but not list them.
+    match /usernames/{username} {
+      allow get: if true;
+      allow create: if signedInAs(request.resource.data.uid)
+        && request.resource.data.keys().hasOnly(['uid'])
+        && username.matches('[a-z0-9_]{3,20}')
+        && getAfter(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.username == username;
+      // Only when renaming: the profile must already point somewhere else.
+      allow delete: if signedInAs(resource.data.uid)
+        && getAfter(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.username != username;
+    }
+
+    // profiles/{uid} = { username, public }. Readable by others only while public.
+    match /profiles/{uid} {
+      function validProfile() {
+        let data = request.resource.data;
+        return data.keys().hasOnly(['username', 'public'])
+          && data.keys().hasAll(['username', 'public'])
+          && data.public is bool
+          && data.username is string
+          && getAfter(/databases/$(database)/documents/usernames/$(data.username)).data.uid == uid;
+      }
+
+      allow get: if signedInAs(uid) || resource.data.public == true;
+      allow create: if signedInAs(uid) && validProfile();
+      // Renaming must release the old name in the same write.
+      allow update: if signedInAs(uid) && validProfile()
+        && (request.resource.data.username == resource.data.username
+          || !existsAfter(/databases/$(database)/documents/usernames/$(resource.data.username)));
     }
 
     // Everything else is closed.

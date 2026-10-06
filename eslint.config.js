@@ -27,6 +27,10 @@ export default defineConfig([
     },
   },
   {
+    files: ['rules-tests/**', '*.config.js'],
+    languageOptions: { globals: globals.node },
+  },
+  {
     // Test helpers aren't hot-reloaded, so they can export components alongside functions.
     files: ['src/test/**', '**/*.test.{js,jsx}'],
     rules: {

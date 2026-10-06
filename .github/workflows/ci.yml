@@ -38,3 +38,25 @@ jobs:
       # Builds without Firebase/OMDb env vars; the app turns accounts off when they're missing.
       - name: Build
         run: npm run build
+
+  # Runs firestore.rules in the Firestore emulator, which needs Java.
+  rules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - run: npm ci
+
+      - name: Firestore rules tests
+        run: npm run test:rules
