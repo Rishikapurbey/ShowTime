@@ -34,11 +34,11 @@ To run this project on your own machine:
 
 1.  Clone the repository:
     ```bash
-    git clone [https://github.com/YourUsername/ShowTime-React-App.git](https://github.com/YourUsername/ShowTime-React-App.git)
+    git clone https://github.com/Rishikapurbey/ShowTime.git
     ```
 2.  Navigate into the project directory:
     ```bash
-    cd ShowTime-React-App
+    cd ShowTime
     ```
 3.  Install the necessary dependencies:
     ```bash
