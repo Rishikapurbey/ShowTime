@@ -1,5 +1,7 @@
 # ShowTime - A Cinematic Streaming Guide
 
+[![CI](https://github.com/Rishikapurbey/ShowTime/actions/workflows/ci.yml/badge.svg)](https://github.com/Rishikapurbey/ShowTime/actions/workflows/ci.yml)
+
 
 A fully responsive, single-page movie discovery application built with React. Inspired by modern streaming services, this app allows users to browse, search, and manage a personalized watchlist in a clean and modern interface.
 
