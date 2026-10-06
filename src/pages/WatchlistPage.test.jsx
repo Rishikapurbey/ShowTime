@@ -70,6 +70,54 @@ describe('WatchlistPage', () => {
     });
   });
 
+  describe('stats tab', () => {
+    const openStats = () => userEvent.click(screen.getByRole('tab', { name: 'Stats' }));
+    const tile = (label) => screen.getByText(label, { selector: '.stat-label' }).closest('.stat-tile');
+
+    it('shows headline numbers and keeps the tab in the URL', async () => {
+      const { location } = renderPage();
+      await openStats();
+      expect(param(location, 'tab')).toBe('stats');
+      expect(tile('Watched')).toHaveTextContent('4movies');
+      expect(tile('To watch')).toHaveTextContent('2movies');
+      // (4 + 5 + 2) / 3 rated
+      expect(tile('Average rating')).toHaveTextContent('3.7 ★from 3 rated');
+      // The list toolbar belongs to the other tabs.
+      expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
+      expect(screen.queryByRole('link', { name: /Dune/ })).not.toBeInTheDocument();
+    });
+
+    it('charts ratings and decades', () => {
+      renderPage('/watchlist?tab=stats');
+      const ratings = within(screen.getByRole('figure', { name: 'Your ratings' })).getAllByRole('listitem');
+      expect(ratings.map((r) => r.getAttribute('aria-label'))).toEqual([
+        '5 ★: 1 movie · 33% of rated',
+        '4 ★: 1 movie · 33% of rated',
+        '3 ★: 0 movies · 0% of rated',
+        '2 ★: 1 movie · 33% of rated',
+        '1 ★: 0 movies · 0% of rated',
+      ]);
+      const decades = within(screen.getByRole('figure', { name: 'Your decades' })).getAllByRole('listitem');
+      expect(decades.map((r) => r.getAttribute('aria-label'))).toEqual([
+        '2000s: 3 movies · 75% of watched',
+        '2010s: 1 movie · 25% of watched',
+      ]);
+    });
+
+    it('explains what to do before anything is watched', () => {
+      renderPage('/watchlist?tab=stats', { watchlist: [WATCHLIST[4]] });
+      expect(screen.getByText(/Mark movies as watched to see/)).toBeInTheDocument();
+      expect(tile('Average rating')).toHaveTextContent('–');
+      expect(screen.queryByRole('figure')).not.toBeInTheDocument();
+    });
+
+    it('prompts for ratings when watched movies are unrated', () => {
+      renderPage('/watchlist?tab=stats', { watchlist: [WATCHLIST[2]] });
+      expect(screen.getByText(/Rate the movies you've watched/)).toBeInTheDocument();
+      expect(screen.getByRole('figure', { name: 'Your decades' })).toBeInTheDocument();
+    });
+  });
+
   describe('sorting', () => {
     const sortBy = (label) => userEvent.selectOptions(screen.getByRole('combobox', { name: 'Sort' }), label);
 

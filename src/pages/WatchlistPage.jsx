@@ -3,12 +3,14 @@ import { useAuth } from '../context/auth-context';
 import MovieList from '../components/MovieList';
 import WatchedControls from '../components/WatchedControls';
 import SharePanel from '../components/SharePanel';
+import StatsPanel from '../components/StatsPanel';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import './WatchlistPage.css';
 
 const TABS = [
   { key: 'towatch', label: 'To watch', empty: 'Nothing left to watch. Add some movies!' },
   { key: 'watched', label: 'Watched', empty: "You haven't marked anything as watched yet." },
+  { key: 'stats', label: 'Stats' },
 ];
 
 // The watchlist arrives newest-first from Firestore, so "added" sorts need no comparator.
@@ -78,7 +80,9 @@ const WatchlistPage = () => {
   const byTab = {
     towatch: watchlist.filter((m) => !m.watched),
     watched: watchlist.filter((m) => m.watched),
+    stats: [],
   };
+  const onStatsTab = activeTab.key === 'stats';
 
   const query = titleQuery.trim().toLowerCase();
   let movies = byTab[activeTab.key].filter(
@@ -107,12 +111,15 @@ const WatchlistPage = () => {
                 // The rating filter only exists on the Watched tab, so drop it when switching.
                 onClick={() => updateParams({ tab: tab === TABS[0] ? '' : tab.key, rating: '' })}
               >
-                {tab.label} <span className="tab-count">{byTab[tab.key].length}</span>
+                {tab.label}
+                {tab.key !== 'stats' && <span className="tab-count"> {byTab[tab.key].length}</span>}
               </button>
             ))}
           </div>
 
-          {byTab[activeTab.key].length > 0 && (
+          {onStatsTab && <StatsPanel watchlist={watchlist} />}
+
+          {!onStatsTab && byTab[activeTab.key].length > 0 && (
             <div className="watchlist-toolbar">
               <input
                 type="search"
@@ -145,7 +152,7 @@ const WatchlistPage = () => {
             </div>
           )}
 
-          {movies.length > 0 ? (
+          {onStatsTab ? null : movies.length > 0 ? (
             <MovieList movies={movies} layout="grid" renderActions={renderWatchedControls} />
           ) : isFiltered ? (
             <div className="watchlist-message">

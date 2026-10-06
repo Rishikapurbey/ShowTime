@@ -1,0 +1,155 @@
+/* Chart colors: the dark-mode amber step from the dataviz reference palette, validated
+   against the card surface (OKLCH lightness band and >= 3:1 contrast). */
+.bar-chart {
+  --bar-color: #c98500;
+  --bar-color-active: #e09a12;
+  --chart-axis: #3a3a3a;
+  --chart-surface: #1c1c1c;
+  margin: 0;
+  background-color: var(--chart-surface);
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 16px 20px 18px;
+  font-family: sans-serif;
+  min-width: 0;
+}
+
+.bar-chart-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.bar-chart-header h3 {
+  margin: 0;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  font-weight: normal;
+  color: #fff;
+}
+
+.bar-chart-toggle {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+.bar-chart-toggle:hover,
+.bar-chart-toggle:focus-visible {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.bar-chart-rows {
+  display: flex;
+  flex-direction: column;
+  /* Surface gap between neighboring bars. */
+  gap: 6px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  align-items: center;
+  gap: 10px;
+  /* A taller hit area than the 16px bar. */
+  min-height: 26px;
+  border-radius: 4px;
+  outline: none;
+}
+
+.bar-row:focus-visible {
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.bar-label {
+  color: #aaa;
+  font-size: 0.85rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* The left border is the shared baseline every bar grows from. */
+.bar-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  border-left: 1px solid var(--chart-axis);
+}
+
+/* Width leaves room for the value label at the tip of the longest bar. */
+.bar {
+  flex: none;
+  height: 16px;
+  width: calc((100% - 2.5rem) * var(--fraction));
+  background-color: var(--bar-color);
+  /* Square at the baseline, rounded at the data end. */
+  border-radius: 0 4px 4px 0;
+  transition: background-color 0.15s;
+}
+
+.bar-row.active .bar {
+  background-color: var(--bar-color-active);
+}
+
+.bar-value {
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.bar-tooltip {
+  position: absolute;
+  bottom: calc(100% + 2px);
+  /* Near the end of the bar, but never past the right edge of the chart. */
+  left: clamp(0px, calc((100% - 2.5rem) * var(--fraction) - 1.5rem), calc(100% - 9rem));
+  z-index: 2;
+  white-space: nowrap;
+  background-color: #2b2b2b;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: #aaa;
+  font-size: 0.8rem;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.bar-tooltip strong {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.bar-chart-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.bar-chart-table th,
+.bar-chart-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #2a2a2a;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar-chart-table th {
+  color: #aaa;
+  font-weight: normal;
+}
+
+.bar-chart-table td {
+  color: #fff;
+}
+
+.bar-chart-table .bar-chart-table-detail {
+  color: #888;
+}
