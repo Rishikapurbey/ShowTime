@@ -60,6 +60,7 @@ const WatchlistPage = () => {
   if (authLoading) {
     return (
       <div className="watchlist-page">
+        <Link to="/" className="back-link">← Back to Home</Link>
         <p className="status-message">Loading...</p>
       </div>
     );

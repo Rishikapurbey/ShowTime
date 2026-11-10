@@ -6,7 +6,7 @@ import './MovieCard.css';
 
 const MovieCard = ({ movie, actions }) => {
   const { currentUser, watchlist, addToWatchlist, removeFromWatchlist } = useAuth();
-  const poster = posterOrPlaceholder(movie.Poster);
+  const poster = posterOrPlaceholder(movie.Poster, movie.Title);
   const inWatchlist = watchlist.some((m) => m.imdbID === movie.imdbID);
 
   const toggleWatchlist = (e) => {

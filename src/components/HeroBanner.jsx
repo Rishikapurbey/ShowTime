@@ -37,7 +37,7 @@ const HeroBanner = () => {
     return <section className="hero hero-skeleton" aria-hidden="true" />;
   }
 
-  const poster = posterOrPlaceholder(movie.Poster);
+  const poster = posterOrPlaceholder(movie.Poster, movie.Title);
   const inWatchlist = watchlist.some((m) => m.imdbID === movie.imdbID);
 
   const toggleWatchlist = () => {

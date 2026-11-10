@@ -71,7 +71,7 @@ const MovieDetailPage = () => {
     );
   }
 
-  const poster = posterOrPlaceholder(movieDetails.Poster);
+  const poster = posterOrPlaceholder(movieDetails.Poster, movieDetails.Title);
   const meta = [movieDetails.Rated, movieDetails.Year, movieDetails.Runtime, movieDetails.Genre].filter(has);
   const trailerUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
     `${movieDetails.Title} ${movieDetails.Year} official trailer`

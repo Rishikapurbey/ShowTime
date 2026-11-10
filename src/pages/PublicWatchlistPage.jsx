@@ -44,6 +44,7 @@ const PublicWatchlistPage = () => {
   if (isLoading) {
     return (
       <div className="watchlist-page">
+        <Link to="/" className="back-link">← Back to Home</Link>
         <h1>@{username}'s Watchlist</h1>
         <MovieList movies={[]} isLoading layout="grid" />
       </div>
