@@ -40,10 +40,8 @@ const SignupPage = () => {
     <div className="auth-page">
       <div className="auth-container">
         <Link to="/" className="back-link">← Back to Home</Link>
-        <div className="form-logo">
-          <h1>ShowTime</h1>
-        </div>
-        <h2>Sign Up</h2>
+        <div className="form-logo">ShowTime</div>
+        <h1>Sign Up</h1>
         {error && <p className="auth-error" role="alert">{error}</p>}
         <form onSubmit={handleSignup}>
           <input

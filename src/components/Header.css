@@ -11,15 +11,11 @@
   box-shadow: 0 4px 15px -5px rgba(229, 9, 20, 0.7);
 }
 
+/* Plain text, not a heading: each page's own title is its one <h1>. */
 .header-logo {
-  text-decoration: none;
-  color: #E50914 !important;
-}
-
-.header h1 {
+  color: #E50914;
   font-size: 2.5rem;
   font-weight: bold;
-  margin: 0;
 }
 
 .header-nav {
@@ -96,7 +92,7 @@
     gap: 12px;
   }
 
-  .header h1 {
+  .header-logo {
     font-size: 1.9rem;
   }
 

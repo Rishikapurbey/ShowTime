@@ -21,9 +21,7 @@ const Header = () => {
   
   return (
     <div className='header'>
-      <div className="header-logo">
-        <h1>ShowTime</h1>
-      </div>
+      <div className="header-logo">ShowTime</div>
       <div className="header-nav">
         {authLoading ? null : currentUser ? (
           <>

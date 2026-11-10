@@ -4,10 +4,16 @@
   justify-content: center;
 }
 
-.search-bar input {
-  padding: 12px 20px;
+/* Holds the input and the clear button that sits inside its right edge. */
+.search-field {
+  position: relative;
   width: 50%;
   max-width: 500px;
+}
+
+.search-bar input {
+  padding: 12px 44px 12px 20px;
+  width: 100%;
   border: 1px solid #333;
   border-radius: 25px; 
   background-color: #222;
@@ -24,4 +30,38 @@
 
 .search-bar input::placeholder {
   color: #777;
+}
+
+.search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #999;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.search-clear:hover,
+.search-clear:focus-visible {
+  color: #fff;
+  background-color: #333;
+  outline: none;
+}
+
+@media (max-width: 600px) {
+  .search-bar {
+    padding: 0 16px;
+  }
+
+  .search-field {
+    width: 100%;
+  }
 }

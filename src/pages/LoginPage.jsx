@@ -57,10 +57,8 @@ const LoginPage = () => {
     <div className="auth-page">
       <div className="auth-container">
         <Link to="/" className="back-link">← Back to Home</Link>
-        <div className="form-logo">
-          <h1>ShowTime</h1>
-        </div>
-        <h2>Login</h2>
+        <div className="form-logo">ShowTime</div>
+        <h1>Login</h1>
         {error && <p className="auth-error" role="alert">{error}</p>}
         {notice && <p className="auth-notice" role="status">{notice}</p>}
         <form onSubmit={handleLogin}>

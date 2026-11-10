@@ -47,4 +47,13 @@ describe.each(PAGES)('$name page', ({ ui, route, path = route, auth = {} }) => {
     await screen.findByRole('link', { name: '← Back to Home' });
     expect(screen.queryByRole('link', { name: 'ShowTime' })).not.toBeInTheDocument();
   });
+
+  it('has exactly one main heading, and it is not the logo', async () => {
+    fetchPublicWatchlist.mockResolvedValue({ uid: 'someone-else', movies: [] });
+    renderWithAuth(ui, { route, path, auth });
+    await screen.findByRole('link', { name: '← Back to Home' });
+    const h1s = screen.getAllByRole('heading', { level: 1 });
+    expect(h1s).toHaveLength(1);
+    expect(h1s[0]).not.toHaveTextContent('ShowTime');
+  });
 });
