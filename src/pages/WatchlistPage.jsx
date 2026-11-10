@@ -68,6 +68,7 @@ const WatchlistPage = () => {
   if (!currentUser) {
     return (
       <div className="watchlist-page">
+        <Link to="/" className="back-link">← Back to Home</Link>
         <div className="watchlist-message">
           <h1>Please Login</h1>
           <p>You need to be logged in to see your watchlist.</p>
@@ -96,6 +97,7 @@ const WatchlistPage = () => {
 
   return (
     <div className="watchlist-page">
+      <Link to="/" className="back-link">← Back to Home</Link>
       <h1>My Watchlist{watchlist.length > 0 && <span className="watchlist-count"> · {watchlist.length}</span>}</h1>
       <SharePanel />
 

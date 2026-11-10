@@ -17,6 +17,12 @@
 }
 
 
+/* The auth card centres its text; keep the back link on the left. */
+.auth-container .back-link {
+  display: block;
+  text-align: left;
+}
+
 .form-logo {
   text-decoration: none;
   color: #e50914 !important; 

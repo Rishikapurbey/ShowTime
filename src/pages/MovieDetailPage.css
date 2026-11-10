@@ -23,19 +23,6 @@
   color: #fff;
 }
 
-.back-link {
-  color: #fff !important;
-  text-decoration: none;
-  margin-bottom: 20px;
-  display: inline-block;
-  font-family: sans-serif;
-  font-weight: bold;
-}
-
-.back-link:hover {
-  text-decoration: underline;
-}
-
 .detail-content {
   display: flex;
   gap: 40px;

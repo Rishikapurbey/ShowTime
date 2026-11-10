@@ -40,7 +40,7 @@ const HomePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedTerm]);
 
-  // URL → input, e.g. clicking the logo or pressing Back.
+  // URL → input, e.g. following a "Back to Home" link or pressing Back.
   useEffect(() => {
     if (urlQuery !== debouncedTerm) setSearchTerm(urlQuery);
     // eslint-disable-next-line react-hooks/exhaustive-deps

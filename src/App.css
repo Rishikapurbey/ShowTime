@@ -12,3 +12,17 @@
   display: flex;
   flex-direction: column;
 }
+
+/* "← Back to Home" link shared by every page that isn't home. */
+.back-link {
+  color: #fff !important;
+  text-decoration: none;
+  margin-bottom: 20px;
+  display: inline-block;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}

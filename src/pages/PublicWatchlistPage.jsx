@@ -75,6 +75,7 @@ const PublicWatchlistPage = () => {
 
   return (
     <div className="watchlist-page">
+      <Link to="/" className="back-link">← Back to Home</Link>
       <h1>
         @{username}'s Watchlist
         {data.movies.length > 0 && <span className="watchlist-count"> · {data.movies.length}</span>}
