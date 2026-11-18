@@ -1,0 +1,161 @@
+.dropdown {
+  position: relative;
+}
+
+/* Same height, pill shape and colours as the watchlist search box beside it. */
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 14px 9px 16px;
+  border: 1px solid #333;
+  border-radius: 20px;
+  background-color: #222;
+  color: #fff;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.dropdown-trigger:hover {
+  border-color: #555;
+  background-color: #282828;
+}
+
+.dropdown-trigger:focus-visible {
+  outline: 2px solid #e50914;
+  outline-offset: 2px;
+}
+
+/* While open, the red border alone shows focus. */
+.dropdown.open .dropdown-trigger {
+  border-color: #e50914;
+  outline: none;
+}
+
+.dropdown-label {
+  color: #999;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dropdown-value {
+  display: grid;
+  flex: 1;
+  white-space: nowrap;
+}
+
+.dropdown-value > span {
+  grid-area: 1 / 1;
+}
+
+.dropdown-sizer {
+  visibility: hidden;
+}
+
+.dropdown-chevron {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: #999;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s, stroke 0.2s;
+}
+
+.dropdown-trigger:hover .dropdown-chevron {
+  stroke: #fff;
+}
+
+.dropdown.open .dropdown-chevron {
+  stroke: #e50914;
+  transform: rotate(180deg);
+}
+
+/* Above the movie cards, which rise to z-index 10 on hover. */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  padding: 6px;
+  border: 1px solid #333;
+  border-radius: 14px;
+  background-color: #1c1c1c;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
+  list-style: none;
+  transform-origin: top;
+  animation: dropdown-in 0.14s ease-out;
+}
+
+.dropdown-menu.up {
+  top: auto;
+  bottom: calc(100% + 6px);
+  transform-origin: bottom;
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: scaleY(0.94);
+  }
+}
+
+.dropdown-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 36px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  color: #bbb;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.dropdown-option[aria-selected='true'] {
+  color: #fff;
+}
+
+.dropdown-option.active {
+  background-color: rgba(229, 9, 20, 0.18);
+  color: #fff;
+}
+
+/* A small version of the red "watched" badge on the movie posters. */
+.dropdown-check {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.dropdown-check circle {
+  fill: #e50914;
+}
+
+.dropdown-check path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown-menu {
+    animation: none;
+  }
+
+  .dropdown-trigger,
+  .dropdown-chevron {
+    transition: none;
+  }
+}

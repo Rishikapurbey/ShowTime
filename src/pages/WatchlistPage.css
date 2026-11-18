@@ -93,27 +93,9 @@
   color: #777;
 }
 
-.watchlist-select {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #aaa;
-  font-size: 0.9rem;
-}
-
-.watchlist-select select {
-  padding: 8px 10px;
-  border: 1px solid #333;
-  border-radius: 4px;
-  background-color: #222;
-  color: #fff;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.watchlist-select select:focus-visible {
-  outline: 2px solid #e50914;
-  outline-offset: 1px;
+.rating-stars {
+  color: #f5c518;
+  letter-spacing: 1px;
 }
 
 .clear-filters {
@@ -134,6 +116,10 @@
   .watchlist-search {
     max-width: none;
     flex-basis: 100%;
+  }
+
+  .watchlist-toolbar .dropdown {
+    flex: 1 1 100%;
   }
 }
 

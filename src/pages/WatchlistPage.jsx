@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/auth-context';
+import Dropdown from '../components/Dropdown';
 import MovieList from '../components/MovieList';
 import WatchedControls from '../components/WatchedControls';
 import SharePanel from '../components/SharePanel';
@@ -34,6 +35,11 @@ const RATING_FILTERS = [
 ];
 
 const renderWatchedControls = (movie) => <WatchedControls movie={movie} compact />;
+
+const renderRatingOption = ({ label }) => {
+  const stars = label.match(/^★+/)?.[0] ?? '';
+  return <><span className="rating-stars">{stars}</span>{label.slice(stars.length)}</>;
+};
 
 const WatchlistPage = () => {
   const { watchlist, currentUser, authLoading } = useAuth();
@@ -133,24 +139,21 @@ const WatchlistPage = () => {
                 onChange={(e) => updateParams({ q: e.target.value })}
               />
 
-              <label className="watchlist-select">
-                <span>Sort</span>
-                <select value={sort.key} onChange={(e) => updateParams({ sort: e.target.value === SORTS[0].key ? '' : e.target.value })}>
-                  {SORTS.filter((s) => onWatchedTab || !s.watchedOnly).map((s) => (
-                    <option key={s.key} value={s.key}>{s.label}</option>
-                  ))}
-                </select>
-              </label>
+              <Dropdown
+                label="Sort"
+                options={SORTS.filter((s) => onWatchedTab || !s.watchedOnly)}
+                value={sort.key}
+                onChange={(key) => updateParams({ sort: key === SORTS[0].key ? '' : key })}
+              />
 
               {onWatchedTab && (
-                <label className="watchlist-select">
-                  <span>Rating</span>
-                  <select value={ratingFilter.key} onChange={(e) => updateParams({ rating: e.target.value })}>
-                    {RATING_FILTERS.map((f) => (
-                      <option key={f.key} value={f.key}>{f.label}</option>
-                    ))}
-                  </select>
-                </label>
+                <Dropdown
+                  label="Rating"
+                  options={RATING_FILTERS}
+                  value={ratingFilter.key}
+                  onChange={(key) => updateParams({ rating: key })}
+                  renderOption={renderRatingOption}
+                />
               )}
             </div>
           )}

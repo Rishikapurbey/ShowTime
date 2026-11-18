@@ -119,7 +119,11 @@ describe('WatchlistPage', () => {
   });
 
   describe('sorting', () => {
-    const sortBy = (label) => userEvent.selectOptions(screen.getByRole('combobox', { name: 'Sort' }), label);
+    const openSort = () => userEvent.click(screen.getByRole('combobox', { name: 'Sort' }));
+    const sortBy = async (label) => {
+      await openSort();
+      await userEvent.click(screen.getByRole('option', { name: label }));
+    };
 
     it.each([
       ['Oldest added', ['Cars', 'Avatar', 'Breaking Bad', 'Inception']],
@@ -134,15 +138,18 @@ describe('WatchlistPage', () => {
       expect(shownTitles()).toEqual(expected);
     });
 
-    it('only offers the rating sort on the Watched tab', () => {
+    it('only offers the rating sort on the Watched tab', async () => {
       renderPage();
+      await openSort();
+      expect(screen.getByRole('option', { name: 'Recently added' })).toBeInTheDocument();
       expect(screen.queryByRole('option', { name: 'Your rating (highest)' })).not.toBeInTheDocument();
     });
 
-    it('ignores a rating sort in the URL on the To watch tab', () => {
+    it('ignores a rating sort in the URL on the To watch tab', async () => {
       renderPage('/watchlist?sort=rating');
       expect(shownTitles()).toEqual(['Dune', 'Up']);
-      expect(screen.getByRole('combobox', { name: 'Sort' })).toHaveValue('added');
+      await openSort();
+      expect(screen.getByRole('option', { selected: true })).toHaveTextContent('Recently added');
     });
 
     it('keeps the sort in the URL and drops it when back on the default', async () => {
@@ -155,12 +162,10 @@ describe('WatchlistPage', () => {
   });
 
   describe('filtering', () => {
-    // Pass the option element: matching by label text fails on "&" (user-event compares innerHTML).
-    const filterByRating = (label) =>
-      userEvent.selectOptions(
-        screen.getByRole('combobox', { name: 'Rating' }),
-        screen.getByRole('option', { name: label })
-      );
+    const filterByRating = async (label) => {
+      await userEvent.click(screen.getByRole('combobox', { name: 'Rating' }));
+      await userEvent.click(screen.getByRole('option', { name: label }));
+    };
 
     it.each([
       ['★★★★★ only', ['Breaking Bad']],
