@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/Rishikapurbey/ShowTime/actions/workflows/ci.yml/badge.svg)](https://github.com/Rishikapurbey/ShowTime/actions/workflows/ci.yml) ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white) ![Firebase](https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-FFCA28?logo=firebase&logoColor=black) ![Tests](https://img.shields.io/badge/tests-Vitest%20%2B%20Firestore%20rules-6E9F18?logo=vitest&logoColor=white)
 
-[**Live demo**](https://show-time-chi.vercel.app/) · [Features](#features) · [Getting started](#getting-started) · [Architecture](#architecture) · [Testing](#testing)
+[**Live demo**](https://show-time-chi.vercel.app/) · [Features](#features) · [Getting started](#getting-started) · [Architecture](#architecture) · [Testing](#testing) · [Documentation](#documentation)
 
 <img src="docs/screenshots/home.jpg" alt="ShowTime homepage with a featured movie banner, search bar and Recently Viewed row" width="100%">
 
@@ -29,9 +29,10 @@ The app also works without Firebase configured: browsing, search and movie pages
 
 ### Your watchlist
 - **Email/password and Google sign-in**, with password reset and readable error messages.
-- **Synced watchlist** stored in Firestore and updated live across devices. Add movies from any card or movie page.
+- **Synced watchlist** stored in Firestore and updated live across devices. Add movies from any card, the featured banner or a movie page.
+- **Try before signing in**: signed-out visitors see every watchlist button. Clicking one explains the feature, and after signing in they return to the same page with the movie added. The Watchlist page previews what an account offers.
 - **Watched status and 1–5 star ratings.** Rating a movie marks it as watched.
-- **To watch / Watched tabs** with sorting (date added, title, release year, your rating), a rating filter and title search, all kept in the URL.
+- **To watch / Watched tabs** with sorting (date added, title, release year, your rating), a rating filter and title search, all kept in the URL. Sort and filter use custom keyboard-friendly dropdowns.
 - **Stats tab**: movies watched, average rating, and charts of your ratings and the decades you watch.
 
 ### Share
@@ -41,7 +42,7 @@ The app also works without Firebase configured: browsing, search and movie pages
 ### Quality
 - **Responsive** from 320px phones to wide screens.
 - **Fast first load**: pages and Firebase are loaded on demand, and OMDb responses are cached for 10 minutes.
-- **Accessible**: keyboard-operable controls, labeled charts with table views, and ARIA roles for tabs, switches and ratings.
+- **Accessible**: keyboard-operable controls and dialogs, labeled charts with table views, and ARIA roles for tabs, switches, dropdowns and ratings.
 
 ## Screenshots
 
@@ -128,7 +129,7 @@ Then open the local address Vite prints (usually http://localhost:5173).
 ```mermaid
 flowchart LR
   UI["React pages & components"] -->|"TanStack Query (cached)"| OMDb[("OMDb API")]
-  UI --> Ctx["AuthProvider / RecentlyViewedProvider"]
+  UI --> Ctx["Auth, Recently Viewed and Sign-in Prompt providers"]
   Ctx -->|"loaded on demand"| Auth["Firebase Auth"]
   Ctx -->|"live sync"| FS[("Cloud Firestore")]
   Public["/u/:username page"] -->|"read-only, signed out OK"| FS
@@ -151,9 +152,9 @@ The rules also validate every write: field names and types, ratings limited to w
 ```
 src/
 ├── api/          OMDb client and the public-watchlist loader
-├── components/   Movie cards and rows, watched/rating controls, charts, share panel
-├── context/      Auth + watchlist provider, recently viewed provider
-├── hooks/        useDebounce, useShareProfile
+├── components/   Movie cards and rows, dropdown, watched/rating controls, charts, share panel, sign-in dialog
+├── context/      Auth + watchlist, recently viewed and sign-in prompt providers
+├── hooks/        useDebounce, useShareProfile, useWatchlistToggle
 ├── lib/          Firebase loader, share-link and stats helpers, error messages
 ├── pages/        Home, movie details, watchlist, public watchlist, login, signup, contact, 404
 └── test/         Shared test setup and helpers
@@ -167,7 +168,7 @@ npm test             # unit and component tests, no Firebase or OMDb key needed
 npm run test:rules   # security rules tests in the Firestore emulator (needs Java 21+)
 ```
 
-- **Unit and component tests** cover the watchlist page (tabs, sorting, filters, search), watched and rating controls, stats and charts, sign-in flows, sharing, recently viewed, and the auth provider running against a fake Firebase.
+- **Unit and component tests** cover the watchlist page (tabs, sorting, filters, search), dropdowns, watched and rating controls, stats and charts, sign-in flows including saving a movie after signing in, sharing, recently viewed, and the auth provider running against a fake Firebase.
 - **Security rules tests** run [`firestore.rules`](firestore.rules) in the real Firestore emulator: private and shared watchlists, field validation, taken and invalid share names, renaming, and attempts to write other users' data.
 - **CI**: every push to `main` runs lint, tests and a production build, plus the rules tests in a separate job with Java.
 
@@ -181,6 +182,13 @@ To deploy your own copy:
 2. Add the same `VITE_*` environment variables in the project settings. You can paste the contents of `.env.local` straight into the first field.
 3. [`vercel.json`](vercel.json) sends every path to `index.html`, so deep links such as `/movie/tt0468569` and `/u/your_name` work on refresh.
 4. Add the site's domain to Firebase **Authorized domains** (see [step 3](#3-set-up-firebase-optional)).
+
+Vercel publishes only the website. After changing [`firestore.rules`](firestore.rules), publish the rules separately with the command in [step 3](#3-set-up-firebase-optional).
+
+## Documentation
+
+- [OWNER.md](OWNER.md): the complete project record, including every feature, flowcharts, operations and troubleshooting.
+- [AGENTS.md](AGENTS.md): the working guide for AI coding assistants.
 
 ## Acknowledgements
 
