@@ -2,76 +2,182 @@
 
 # ShowTime
 
-**A cinematic movie discovery app: browse, search, track what you watch, and share your watchlist.**
+**Find your next movie, keep track of what you watch, and share your taste with friends.**
 
-[![CI](https://github.com/Rishikapurbey/ShowTime/actions/workflows/ci.yml/badge.svg)](https://github.com/Rishikapurbey/ShowTime/actions/workflows/ci.yml) ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white) ![Firebase](https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-FFCA28?logo=firebase&logoColor=black) ![Tests](https://img.shields.io/badge/tests-Vitest%20%2B%20Firestore%20rules-6E9F18?logo=vitest&logoColor=white)
+### [Try ShowTime →](https://show-time-chi.vercel.app/)
 
-[**Live demo**](https://show-time-chi.vercel.app/) · [Features](#features) · [Getting started](#getting-started) · [Architecture](#architecture) · [Testing](#testing) · [Documentation](#documentation)
+Free to use · Nothing to install · No account needed to browse
 
-<img src="docs/screenshots/home.jpg" alt="ShowTime homepage with a featured movie banner, search bar and Recently Viewed row" width="100%">
+[What you can do](#what-you-can-do) · [Screenshots](#screenshots) · [Questions](#quick-questions) · [Built with](#built-with) · [Architecture](#architecture) · [Run it locally](#run-it-locally)
+
+<img src="docs/screenshots/home.jpg" alt="ShowTime homepage with a featured movie, search bar and Recently Viewed posters" width="100%">
 
 </div>
 
-## About
+## What you can do
 
-ShowTime is a single-page React app for finding movies and keeping track of them. Movie data comes from the [OMDb API](https://www.omdbapi.com/). Accounts, watchlists and sharing run on Firebase Authentication and Cloud Firestore, protected by security rules that are tested against the Firestore emulator in CI.
+### Find something to watch
 
-The app also works without Firebase configured: browsing, search and movie pages keep working, and account features switch off with a clear message.
+- See a new **featured movie** every day.
+- Browse rows of **latest movies, action, romantic comedies, thrillers, comedies, family movies, crowd pleasers and animation**.
+- **Search as you type**, and narrow results to movies or series.
+- Pick up where you left off with **Recently Viewed**.
 
-## Features
+### Decide if it's worth your time
 
-### Discover
-- **Featured movie banner** on the homepage, rotating daily.
-- **Curated rows** (latest releases, action, thrillers, comedies and more) that scroll horizontally, with arrow controls on desktop.
-- **Live search** as you type, with an *All / Movies / Series* filter and *Load more* paging. The query lives in the URL, so Back and shared links keep your results.
-- **Detailed movie pages** with plot, cast, IMDb / Rotten Tomatoes / Metacritic scores, and trailer and IMDb links.
-- **Recently Viewed** row of the movies you opened last, synced across devices when you're signed in.
+- Compare **IMDb, Rotten Tomatoes and Metacritic** scores, when available.
+- Read the plot and see the runtime, genre, age rating and IMDb vote count.
+- Check the **director, writers, cast, release date, language, country, box office and awards**.
+- Use **Watch Trailer** to find the trailer on YouTube, or **View on IMDb** for more detail.
 
-### Your watchlist
-- **Email/password and Google sign-in**, with password reset and readable error messages.
-- **Synced watchlist** stored in Firestore and updated live across devices. Add movies from any card, the featured banner or a movie page.
-- **Try before signing in**: signed-out visitors see every watchlist button. Clicking one explains the feature, and after signing in they return to the same page with the movie added. The Watchlist page previews what an account offers.
-- **Watched status and 1–5 star ratings.** Rating a movie marks it as watched.
-- **To watch / Watched tabs** with sorting (date added, title, release year, your rating), a rating filter and title search, all kept in the URL. Sort and filter use custom keyboard-friendly dropdowns.
-- **Stats tab**: movies watched, average rating, and charts of your ratings and the decades you watch.
+### Keep track of your movies
 
-### Share
-- **Public watchlist link** at `/u/your_name`, showing your lists and ratings read-only, even to signed-out visitors.
-- **Switch sharing on or off** at any time, or rename the link (the old link stops working).
+- Save a movie to your **watchlist** with one click from a poster, the featured banner or its movie page.
+- Mark movies as **watched** and give them **1 to 5 stars**.
+- Use the **To watch** and **Watched** tabs to keep your list organized.
+- **Search your list**, sort it by date added, title, release year or your rating, and filter it by stars.
+- Sign in with **email or Google**, and your watchlist follows you across devices.
 
-### Quality
-- **Responsive** from 320px phones to wide screens.
-- **Fast first load**: pages and Firebase are loaded on demand, and OMDb responses are cached for 10 minutes.
-- **Accessible**: keyboard-operable controls and dialogs, labeled charts with table views, and ARIA roles for tabs, switches, dropdowns and ratings.
+### Discover your taste
+
+- See how many movies you have watched and still want to watch.
+- Check your **average rating** and how your ratings are spread.
+- Find out **which decades** you watch most.
+
+### Share your list
+
+- Create your own link, such as `/u/movie_fan`.
+- Friends can see your lists and ratings **without creating an account**.
+- Turn sharing off or change your link whenever you want.
 
 ## Screenshots
 
-| Movie details | Watchlist |
+| Everything about a movie | Your watchlist |
 |---|---|
-| <img src="docs/screenshots/movie-details.jpg" alt="Movie details page for Inception with scores, plot and watchlist controls"> | <img src="docs/screenshots/watchlist.jpg" alt="Watched tab sorted by rating, with star ratings under each poster"> |
+| <img src="docs/screenshots/movie-details.jpg" alt="The Dark Knight movie page with scores, trailer link, cast and watchlist controls"> | <img src="docs/screenshots/watchlist.jpg" alt="Watched list sorted by rating, with star ratings under each poster"> |
+
+| Your movie stats | A list you can share |
+|---|---|
+| <img src="docs/screenshots/stats.jpg" alt="Stats with watched count, average rating, and charts of ratings and decades"> | <img src="docs/screenshots/shared-list.jpg" alt="A public watchlist showing movies and read-only star ratings"> |
 
 <p align="center">
-  <img src="docs/screenshots/stats.jpg" alt="Stats tab with watched count, average rating, and bar charts of ratings and decades" width="80%">
+  <img src="docs/screenshots/phone.jpg" alt="Inception movie page on a phone" width="300">
+  <br>
+  <em>Made to work on phones too.</em>
 </p>
 
-## Tech stack
+## Quick questions
+
+**Is ShowTime free?**
+Yes.
+
+**Do I need an account?**
+No. You can browse, search and open movie pages without one. You only need an account to save movies, rate them and share a list.
+
+**Can I watch full movies here?**
+No. ShowTime helps you discover and keep track of movies. **Watch Trailer** opens a YouTube search for the trailer.
+
+**Who can see my watchlist?**
+Only you, unless you turn on sharing. Anyone with your link can then see your lists and ratings. Your Recently Viewed history stays private.
+
+**Where does the movie information come from?**
+Movie details, posters and scores come from the [OMDb API](https://www.omdbapi.com/), so some details may be missing for some titles.
+
+## Built with
 
 | Area | Tools |
 |---|---|
-| UI | React 19, React Router 7, CSS |
-| Data fetching | TanStack Query, Axios, OMDb API |
-| Accounts and database | Firebase Authentication, Cloud Firestore |
-| Build | Vite 7 |
-| Testing | Vitest, React Testing Library, `@firebase/rules-unit-testing` with the Firestore emulator |
-| CI and hosting | GitHub Actions, Vercel |
+| Interface | React 19, React Router 7, CSS |
+| Movie data | OMDb API, Axios, TanStack Query |
+| Accounts and saved data | Firebase Authentication, Cloud Firestore |
+| Build and code quality | Vite 7, ESLint, Vitest, React Testing Library |
+| Hosting and automation | Vercel, GitHub Actions |
 
-## Getting started
+## Architecture
 
-### Prerequisites
+ShowTime is a single-page React app with no custom backend. The browser gets movie data from OMDb and talks directly to Firebase for accounts and saved data. Firestore security rules decide what each person can read or change.
+
+```mermaid
+flowchart LR
+  User["Browser"] --> App["React app"]
+  Vercel["Vercel"] -->|"serves the website"| User
+  App -->|"TanStack Query, 10-minute cache"| OMDb[("OMDb API")]
+  App --> Providers["Auth, Recently Viewed and Sign-in Prompt providers"]
+  Providers -->|"loaded on demand"| Auth["Firebase Authentication"]
+  Providers -->|"live sync"| Firestore[("Cloud Firestore")]
+  App -->|"public watchlist page"| Firestore
+  Rules{{"Firestore security rules"}} -.->|"check reads and writes"| Firestore
+```
+
+Some choices that shape the app:
+
+- **Fast first load:** the homepage ships first. Other pages and Firebase download when they are needed.
+- **Shareable views:** search terms, tabs, sorting and filters live in the URL, so Back, refresh and shared links keep them.
+- **Fewer API calls:** OMDb responses are cached for 10 minutes.
+- **Browsing keeps working:** without Firebase settings, movie pages and search still run and account features turn off clearly.
+
+### Searching
+
+```mermaid
+flowchart TD
+  A["User types a search"] --> B["Wait 500 ms after typing stops"]
+  B --> C["Store the search in the URL"]
+  C --> D{"Cached result available?"}
+  D -->|Yes| E["Show cached results"]
+  D -->|No| F["Request results from OMDb"]
+  F --> G["Remove duplicates and show the page"]
+  G --> H["Load more requests the next page"]
+```
+
+### Saving a movie before signing in
+
+```mermaid
+flowchart TD
+  A["Signed-out visitor clicks +"] --> B["Sign-in dialog opens"]
+  B -->|"Not now"| C["Stay on the page"]
+  B -->|"Log in or Create account"| D["Auth page keeps the movie and return address"]
+  D --> E["Sign-in succeeds"]
+  E --> F["Return to the original page"]
+  F --> G{"Is the movie already saved?"}
+  G -->|No| H["Add it and show a confirmation"]
+  G -->|Yes| I["Keep the saved entry and rating"]
+```
+
+### Opening a shared watchlist
+
+```mermaid
+flowchart TD
+  A["Visitor opens /u/name"] --> B{"Does the name exist?"}
+  B -->|No| C["Show: private or does not exist"]
+  B -->|Yes| D{"Is sharing turned on?"}
+  D -->|No| C
+  D -->|Yes| E["Load the watchlist"]
+  E --> F["Show read-only tabs and ratings"]
+```
+
+## Project structure
+
+```
+src/
+├── api/          OMDb client and public watchlist loader
+├── components/   Movie cards and rows, dropdowns, ratings, charts, sharing and sign-in dialog
+├── context/      Auth and watchlist, Recently Viewed and sign-in prompt providers
+├── hooks/        Debounced input, share settings and watchlist button behavior
+├── lib/          Firebase loader, stats, sharing, history and sign-in error helpers
+├── pages/        Home, movie, watchlist, public watchlist, login, signup, contact and 404
+└── test/         Shared test setup and helpers
+rules-tests/      Firestore security rules tests
+docs/screenshots/ Images used in this README
+firestore.rules   Database security rules
+```
+
+## Run it locally
+
+### What you need
 
 - **Node.js 20.19+ or 22.12+**
-- A free **OMDb API key**: [request one here](https://www.omdbapi.com/apikey.aspx)
-- *(Optional, for accounts)* a free **Firebase project**
+- A free [OMDb API key](https://www.omdbapi.com/apikey.aspx)
+- A free [Firebase project](https://console.firebase.google.com), only if you want accounts and watchlists
 
 ### 1. Install
 
@@ -79,121 +185,50 @@ The app also works without Firebase configured: browsing, search and movie pages
 git clone https://github.com/Rishikapurbey/ShowTime.git
 cd ShowTime
 npm install
-```
-
-### 2. Configure environment variables
-
-```bash
 cp .env.example .env.local
 ```
 
+### 2. Add your settings
+
+Fill in `.env.local`:
+
 | Variable | Required | Where to find it |
 |---|---|---|
-| `VITE_OMDB_KEY` | Yes | The key emailed to you by OMDb |
+| `VITE_OMDB_KEY` | Yes | The key OMDb emails to you |
 | `VITE_FIREBASE_API_KEY`<br>`VITE_FIREBASE_AUTH_DOMAIN`<br>`VITE_FIREBASE_PROJECT_ID`<br>`VITE_FIREBASE_STORAGE_BUCKET`<br>`VITE_FIREBASE_MESSAGING_SENDER_ID`<br>`VITE_FIREBASE_APP_ID` | For accounts | Firebase console → Project settings → Your apps → Web app |
-
-Firebase web config values identify your project; they aren't secrets. Access is controlled by [`firestore.rules`](firestore.rules).
 
 ### 3. Set up Firebase (optional)
 
-1. Create a project in the [Firebase console](https://console.firebase.google.com) and add a **Web app**.
-2. **Authentication → Sign-in method**: enable **Email/Password** and **Google**.
-3. **Firestore Database**: create a database, then publish the rules from [`firestore.rules`](firestore.rules), either by pasting the whole file into the **Rules** tab or from the command line:
+1. Create a Firebase project and add a **Web app**.
+2. In **Authentication → Sign-in method**, enable **Email/Password** and **Google**.
+3. Create a **Firestore Database**.
+4. Publish the included security rules:
+
    ```bash
    npx firebase-tools deploy --only firestore:rules --project <your-project-id>
    ```
-4. **Authentication → Settings → Authorized domains**: add your deployed domain so Google sign-in works there.
 
-### 4. Run
+### 4. Start the app
 
 ```bash
 npm run dev
 ```
 
-Then open the local address Vite prints (usually http://localhost:5173).
+Open the address Vite prints, usually http://localhost:5173.
 
-## Available scripts
+### Useful commands
 
 | Command | What it does |
 |---|---|
 | `npm run dev` | Start the development server |
-| `npm run build` | Build for production into `dist/` |
-| `npm run preview` | Serve the production build locally |
-| `npm run lint` | Run ESLint |
-| `npm test` | Run the unit and component tests once |
-| `npm run test:watch` | Re-run tests on every change |
-| `npm run test:rules` | Test `firestore.rules` in the Firestore emulator (needs Java 21+) |
+| `npm run build` | Create the production build |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Check the code with ESLint |
+| `npm test` | Run the tests |
 
-## Architecture
+## Credits
 
-```mermaid
-flowchart LR
-  UI["React pages & components"] -->|"TanStack Query (cached)"| OMDb[("OMDb API")]
-  UI --> Ctx["Auth, Recently Viewed and Sign-in Prompt providers"]
-  Ctx -->|"loaded on demand"| Auth["Firebase Auth"]
-  Ctx -->|"live sync"| FS[("Cloud Firestore")]
-  Public["/u/:username page"] -->|"read-only, signed out OK"| FS
-  Rules{{"firestore.rules"}} -.->|"guards every read & write"| FS
-```
-
-### Firestore data model
-
-| Path | Contents | Who can read |
-|---|---|---|
-| `users/{uid}/watchlist/{imdbID}` | `imdbID`, `Title`, `Poster`, `Year`, `addedAt`, optional `watched` and `rating` (1–5) | The owner; anyone while the owner's sharing is on |
-| `users/{uid}/history/recent` | `movies`: the last 20 movies opened | The owner only |
-| `usernames/{name}` | `uid`: reserves a share-link name for one user | Anyone, one name at a time (no listing) |
-| `profiles/{uid}` | `username`, `public` | The owner; anyone while `public` is true |
-
-The rules also validate every write: field names and types, ratings limited to whole numbers from 1 to 5, at most 20 recently viewed movies, one share name per user, and a rename must release the old name in the same write.
-
-### Project structure
-
-```
-src/
-├── api/          OMDb client and the public-watchlist loader
-├── components/   Movie cards and rows, dropdown, watched/rating controls, charts, share panel, sign-in dialog
-├── context/      Auth + watchlist, recently viewed and sign-in prompt providers
-├── hooks/        useDebounce, useShareProfile, useWatchlistToggle
-├── lib/          Firebase loader, share-link and stats helpers, error messages
-├── pages/        Home, movie details, watchlist, public watchlist, login, signup, contact, 404
-└── test/         Shared test setup and helpers
-rules-tests/      Firestore security rules tests (run in the emulator)
-```
-
-## Testing
-
-```bash
-npm test             # unit and component tests, no Firebase or OMDb key needed
-npm run test:rules   # security rules tests in the Firestore emulator (needs Java 21+)
-```
-
-- **Unit and component tests** cover the watchlist page (tabs, sorting, filters, search), dropdowns, watched and rating controls, stats and charts, sign-in flows including saving a movie after signing in, sharing, recently viewed, and the auth provider running against a fake Firebase.
-- **Security rules tests** run [`firestore.rules`](firestore.rules) in the real Firestore emulator: private and shared watchlists, field validation, taken and invalid share names, renaming, and attempts to write other users' data.
-- **CI**: every push to `main` runs lint, tests and a production build, plus the rules tests in a separate job with Java.
-
-## Deployment
-
-The live site runs on [Vercel](https://vercel.com), which redeploys automatically on every push to `main`.
-
-To deploy your own copy:
-
-1. Import the repository in Vercel. It detects Vite, so the default build settings work as they are.
-2. Add the same `VITE_*` environment variables in the project settings. You can paste the contents of `.env.local` straight into the first field.
-3. [`vercel.json`](vercel.json) sends every path to `index.html`, so deep links such as `/movie/tt0468569` and `/u/your_name` work on refresh.
-4. Add the site's domain to Firebase **Authorized domains** (see [step 3](#3-set-up-firebase-optional)).
-
-Vercel publishes only the website. After changing [`firestore.rules`](firestore.rules), publish the rules separately with the command in [step 3](#3-set-up-firebase-optional).
-
-## Documentation
-
-- [OWNER.md](OWNER.md): the complete project record, including every feature, flowcharts, operations and troubleshooting.
-- [AGENTS.md](AGENTS.md): the working guide for AI coding assistants.
-
-## Acknowledgements
-
-- Movie data and posters from the [OMDb API](https://www.omdbapi.com/).
-- Accounts and data by [Firebase](https://firebase.google.com/).
+Movie information and posters come from the [OMDb API](https://www.omdbapi.com/). Accounts and saved data use [Firebase](https://firebase.google.com/).
 
 ## Author
 

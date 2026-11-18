@@ -821,6 +821,8 @@ and read `git status` before committing.
 | Auto-add after sign-in | They should not have to find the movie again |
 | Check before auto-adding | Saving again would erase an existing rating |
 | Custom dropdown | The browser's version looked generic |
+| README starts with users, then technical detail | Visitors should see the value first, while GitHub readers still get architecture and setup |
+| README screenshots use a sample account | They show real movies without exposing your personal list |
 | Push directly to `main` | It is a solo personal project |
 | No AI attribution | You want commits credited only to you |
 
@@ -830,7 +832,6 @@ and read `git status` before committing.
 - The OMDb key is visible in website code.
 - Returning from sign-in opens the correct page but at the top.
 - The sign-in prompt was browser-tested with a simulated login and sample movies.
-- `docs/screenshots/watchlist.jpg` shows the older dropdown.
 - There is no account deletion, email verification or backup job in this repository.
 
 ### Ideas, only if you want them
@@ -839,7 +840,6 @@ and read `git status` before committing.
 - Restore scroll position after sign-in.
 - Add account deletion.
 - Move OMDb requests behind a small server function.
-- Refresh the README screenshots.
 
 ---
 

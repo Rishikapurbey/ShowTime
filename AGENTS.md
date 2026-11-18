@@ -47,6 +47,7 @@ These are firm preferences.
 - **Discuss product decisions first.** When the owner says "let's discuss", or a change has real
   choices, explain what exists today, give a clear recommendation and wait for a yes before
   building. For a direct request with an obvious answer, just do it.
+- **Ask questions as multiple choice.** Put the recommended option first and label it.
 - **Commit and push only when asked.** When asked, commit on `main` and run `git push origin main`.
   **No feature branches and no pull requests.**
 - **No AI attribution, ever.** No `Co-Authored-By` lines, no "Generated with" footers, in commits
@@ -59,6 +60,10 @@ These are firm preferences.
   template-looking design. New UI should feel like part of ShowTime (section 7).
 - **Keep docs current.** User-visible changes go in `README.md`. Changes to features, architecture,
   operations or decisions go in `OWNER.md`. Changes to working rules go here.
+- **The README is for users first.** Start with the live link, features, screenshots and questions,
+  then keep architecture, flowcharts, project structure and local setup visible below. Do not link
+  `OWNER.md` or `AGENTS.md` from it, and do not add database, security, testing or deployment
+  sections unless the owner asks.
 
 ### Git setup on the owner's computer
 
@@ -302,6 +307,5 @@ Start these only if the owner asks.
 - "Latest Movies" uses a hard-coded year, `2025`, in `HomePage.jsx`.
 - After signing in from a prompt, visitors return to the right page but at the top of it.
 - The sign-in prompt was browser-tested with a simulated login and sample movie data.
-- `docs/screenshots/watchlist.jpg` predates the custom dropdowns.
 - There is no account deletion, no email verification and no backup job in this repo.
 - Possible later work: a small server function to hide the OMDb key.
