@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getMovieDetails, posterOrPlaceholder, showPlaceholderOnError } from '../api/omdb';
 import { useAuth } from '../context/auth-context';
+import useWatchlistToggle from '../hooks/useWatchlistToggle';
 import './HeroBanner.css';
 
 // OMDb has no "trending" endpoint, so the featured movie rotates daily through a hand-picked list.
@@ -25,11 +26,12 @@ const dayNumber = Math.floor(Date.now() / (24 * 60 * 60 * 1000));
 const featuredId = FEATURED_IDS[dayNumber % FEATURED_IDS.length];
 
 const HeroBanner = () => {
-  const { currentUser, watchlist, addToWatchlist, removeFromWatchlist } = useAuth();
+  const { authLoading } = useAuth();
   const { data: movie, isLoading, isError } = useQuery({
     queryKey: ['movie', featuredId],
     queryFn: () => getMovieDetails(featuredId),
   });
+  const { inWatchlist, toggle } = useWatchlistToggle(movie);
 
   if (isError) return null;
 
@@ -38,16 +40,6 @@ const HeroBanner = () => {
   }
 
   const poster = posterOrPlaceholder(movie.Poster, movie.Title);
-  const inWatchlist = watchlist.some((m) => m.imdbID === movie.imdbID);
-
-  const toggleWatchlist = () => {
-    if (inWatchlist) {
-      removeFromWatchlist(movie.imdbID);
-    } else {
-      const { imdbID, Title, Poster, Year } = movie;
-      addToWatchlist({ imdbID, Title, Poster, Year });
-    }
-  };
 
   return (
     <section className="hero">
@@ -66,8 +58,8 @@ const HeroBanner = () => {
             <Link to={`/movie/${movie.imdbID}`} className="hero-button primary">
               More Info
             </Link>
-            {currentUser && (
-              <button onClick={toggleWatchlist} className="hero-button secondary">
+            {!authLoading && (
+              <button onClick={toggle} className="hero-button secondary">
                 {inWatchlist ? '✓ In Watchlist' : '+ Watchlist'}
               </button>
             )}

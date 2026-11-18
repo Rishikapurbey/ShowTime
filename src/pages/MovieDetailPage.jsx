@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getMovieDetails, posterOrPlaceholder, showPlaceholderOnError } from '../api/omdb';
 import { useAuth } from '../context/auth-context';
 import { useRecentlyViewed } from '../context/recently-viewed-context';
+import useWatchlistToggle from '../hooks/useWatchlistToggle';
 import WatchedControls from '../components/WatchedControls';
 import './MovieDetailPage.css';
 
@@ -18,16 +19,16 @@ const RATING_SOURCES = {
 
 const MovieDetailPage = () => {
   const { id } = useParams();
-  const { watchlist, addToWatchlist, removeFromWatchlist, currentUser } = useAuth();
+  const { watchlist, authLoading } = useAuth();
   const { recordView } = useRecentlyViewed();
 
   const watchlistEntry = watchlist.find(movie => movie.imdbID === id);
-  const isMovieInWatchlist = Boolean(watchlistEntry);
 
   const { data: movieDetails, isLoading, isError } = useQuery({
     queryKey: ['movie', id],
     queryFn: () => getMovieDetails(id),
   });
+  const { inWatchlist, toggle } = useWatchlistToggle(movieDetails);
 
   useEffect(() => {
     if (movieDetails) recordView(movieDetails);
@@ -39,20 +40,6 @@ const MovieDetailPage = () => {
       document.title = 'ShowTime';
     };
   }, [movieDetails]);
-
-  const handleWatchlistClick = () => {
-    if (isMovieInWatchlist) {
-      removeFromWatchlist(id);
-    } else {
-      const movieToAdd = {
-        imdbID: movieDetails.imdbID,
-        Title: movieDetails.Title,
-        Poster: movieDetails.Poster,
-        Year: movieDetails.Year,
-      };
-      addToWatchlist(movieToAdd);
-    }
-  };
 
   if (isLoading) {
     return (
@@ -102,9 +89,9 @@ const MovieDetailPage = () => {
         <div className="detail-content">
           <div className="detail-left-column">
             <img src={poster} alt={movieDetails.Title} className="detail-poster" onError={showPlaceholderOnError} />
-            {currentUser && (
-              <button onClick={handleWatchlistClick} className="watchlist-button">
-                {isMovieInWatchlist ? '✓ Added to Watchlist' : '+ Add to Watchlist'}
+            {!authLoading && (
+              <button onClick={toggle} className="watchlist-button">
+                {inWatchlist ? '✓ Added to Watchlist' : '+ Add to Watchlist'}
               </button>
             )}
             {watchlistEntry && <WatchedControls movie={watchlistEntry} />}

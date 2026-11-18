@@ -43,6 +43,7 @@ const makeFakes = () => {
     }),
     updateDoc: vi.fn().mockResolvedValue(),
     setDoc: vi.fn().mockResolvedValue(),
+    getDoc: vi.fn().mockResolvedValue({ exists: () => false }),
     deleteDoc: vi.fn().mockResolvedValue(),
     writeBatch: () => batch,
     batch,
@@ -145,6 +146,20 @@ describe('AuthProvider', () => {
           { imdbID: 'tt1', Title: 'Inception', Poster: 'p.jpg', Year: '2010', addedAt: 'SERVER_TIME' }
         )
       );
+    });
+
+    it('adds a movie after sign-in when the account does not have it', async () => {
+      const ctx = await signIn();
+      await expect(ctx.current.addToWatchlistIfMissing({ imdbID: 'tt1', Title: 'Inception' })).resolves.toBe(true);
+      expect(fb.firestoreSdk.getDoc).toHaveBeenCalledWith({ path: 'users/u1/watchlist/tt1' });
+      expect(fb.firestoreSdk.setDoc).toHaveBeenCalledTimes(1);
+    });
+
+    it('leaves an existing entry and its rating alone after sign-in', async () => {
+      fb.firestoreSdk.getDoc.mockResolvedValue({ exists: () => true });
+      const ctx = await signIn();
+      await expect(ctx.current.addToWatchlistIfMissing({ imdbID: 'tt1', Title: 'Inception' })).resolves.toBe(false);
+      expect(fb.firestoreSdk.setDoc).not.toHaveBeenCalled();
     });
 
     it('removes a movie', async () => {

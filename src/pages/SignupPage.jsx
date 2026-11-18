@@ -16,13 +16,14 @@ const SignupPage = () => {
   const location = useLocation();
 
   const redirectTo = location.state?.from || '/';
+  const movieToSave = location.state?.movieToSave;
 
   const run = async (action) => {
     setError('');
     setSubmitting(true);
     try {
       await action();
-      navigate(redirectTo, { replace: true });
+      navigate(redirectTo, { replace: true, state: { addAfterSignIn: movieToSave } });
     } catch (err) {
       const message = authErrorMessage(err);
       if (message) setError(message);
@@ -42,6 +43,7 @@ const SignupPage = () => {
         <Link to="/" className="back-link">← Back to Home</Link>
         <div className="form-logo">ShowTime</div>
         <h1>Sign Up</h1>
+        {movieToSave && <p className="auth-context">Create an account to add {movieToSave.Title} to your watchlist.</p>}
         {error && <p className="auth-error" role="alert">{error}</p>}
         <form onSubmit={handleSignup}>
           <input

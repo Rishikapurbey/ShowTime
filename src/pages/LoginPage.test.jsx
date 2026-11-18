@@ -27,6 +27,17 @@ describe('LoginPage', () => {
     expect(location.current.pathname).toBe('/watchlist');
   });
 
+  it('names the movie being saved and hands it back after logging in', async () => {
+    const movie = { imdbID: 'tt1', Title: 'Inception' };
+    const { location } = renderLogin({}, { routerState: { from: '/movie/tt1', movieToSave: movie } });
+    expect(screen.getByText('Log in to add Inception to your watchlist.')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Sign up now.' })).toBeInTheDocument();
+
+    await fillIn('me@example.com', 'secret123');
+    await userEvent.click(screen.getByRole('button', { name: 'Login' }));
+    expect(location.current.pathname).toBe('/movie/tt1');
+  });
+
   it('goes home after logging in when nothing sent the user here', async () => {
     const { location } = renderLogin();
     await fillIn('me@example.com', 'secret123');

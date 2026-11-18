@@ -1,0 +1,74 @@
+.watchlist-preview {
+  max-width: 980px;
+  padding: 24px 0 56px;
+}
+
+.watchlist-preview-eyebrow {
+  color: #e50914;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.watchlist-page .watchlist-preview h1 {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+.watchlist-preview-intro {
+  max-width: 560px;
+  color: #bbb;
+  font-family: sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.watchlist-preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 44px;
+}
+
+.watchlist-preview-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 28px 32px;
+  padding-top: 32px;
+  border-top: 1px solid #333;
+  list-style: none;
+}
+
+.watchlist-preview-features svg {
+  display: block;
+  width: 26px;
+  height: 26px;
+  margin-bottom: 10px;
+  fill: none;
+  stroke: #e50914;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.watchlist-preview-features h2 {
+  font-size: 1.15rem;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+.watchlist-preview-features p {
+  color: #aaa;
+  font-family: sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 480px) {
+  .watchlist-preview-actions .cta-button {
+    flex: 1 1 100%;
+  }
+}

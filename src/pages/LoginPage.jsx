@@ -17,6 +17,7 @@ const LoginPage = () => {
 
   // Return to the page that sent the user here (e.g. the watchlist), or home.
   const redirectTo = location.state?.from || '/';
+  const movieToSave = location.state?.movieToSave;
 
   const run = async (action) => {
     setError('');
@@ -24,7 +25,7 @@ const LoginPage = () => {
     setSubmitting(true);
     try {
       await action();
-      navigate(redirectTo, { replace: true });
+      navigate(redirectTo, { replace: true, state: { addAfterSignIn: movieToSave } });
     } catch (err) {
       const message = authErrorMessage(err);
       if (message) setError(message);
@@ -59,6 +60,7 @@ const LoginPage = () => {
         <Link to="/" className="back-link">← Back to Home</Link>
         <div className="form-logo">ShowTime</div>
         <h1>Login</h1>
+        {movieToSave && <p className="auth-context">Log in to add {movieToSave.Title} to your watchlist.</p>}
         {error && <p className="auth-error" role="alert">{error}</p>}
         {notice && <p className="auth-notice" role="status">{notice}</p>}
         <form onSubmit={handleLogin}>

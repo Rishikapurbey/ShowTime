@@ -26,3 +26,37 @@
 .back-link:hover {
   text-decoration: underline;
 }
+
+/* The log in / create account pair on the sign-in prompts. */
+.cta-button {
+  display: inline-block;
+  padding: 10px 22px;
+  border: 1px solid #e50914;
+  border-radius: 4px;
+  background-color: #e50914;
+  color: #fff;
+  font-size: 1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.cta-button:hover {
+  background-color: #f6121d;
+  border-color: #f6121d;
+}
+
+.cta-button.secondary {
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.cta-button.secondary:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: #fff;
+}
+
+.cta-button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

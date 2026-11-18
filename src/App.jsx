@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import { SignInPromptProvider } from './context/SignInPromptProvider';
 import HomePage from './pages/HomePage';
 import './App.css';
 
@@ -19,24 +20,26 @@ function App() {
   const shouldShowFooter = location.pathname !== '/login' && location.pathname !== '/signup';
 
   return (
-    <div className="app">
-      <Header />
-      <main className="main-content">
-        <Suspense fallback={null}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/movie/:id" element={<MovieDetailPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/watchlist" element={<WatchlistPage />} />
-            <Route path="/u/:username" element={<PublicWatchlistPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Suspense>
-      </main>
-      {shouldShowFooter && <Footer />}
-    </div>
+    <SignInPromptProvider>
+      <div className="app">
+        <Header />
+        <main className="main-content">
+          <Suspense fallback={null}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/movie/:id" element={<MovieDetailPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/watchlist" element={<WatchlistPage />} />
+              <Route path="/u/:username" element={<PublicWatchlistPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
+        </main>
+        {shouldShowFooter && <Footer />}
+      </div>
+    </SignInPromptProvider>
   );
 }
 

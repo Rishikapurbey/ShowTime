@@ -3,9 +3,10 @@ import { useAuth } from '../context/auth-context';
 import Dropdown from '../components/Dropdown';
 import MovieList from '../components/MovieList';
 import WatchedControls from '../components/WatchedControls';
+import WatchlistPreview from '../components/WatchlistPreview';
 import SharePanel from '../components/SharePanel';
 import StatsPanel from '../components/StatsPanel';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import './WatchlistPage.css';
 
 const TABS = [
@@ -43,7 +44,6 @@ const renderRatingOption = ({ label }) => {
 
 const WatchlistPage = () => {
   const { watchlist, currentUser, authLoading } = useAuth();
-  const location = useLocation();
 
   // Tab, sort, rating filter and title search live in the URL so Back and refresh keep them.
   const [searchParams, setSearchParams] = useSearchParams();
@@ -76,11 +76,7 @@ const WatchlistPage = () => {
     return (
       <div className="watchlist-page">
         <Link to="/" className="back-link">← Back to Home</Link>
-        <div className="watchlist-message">
-          <h1>Please Login</h1>
-          <p>You need to be logged in to see your watchlist.</p>
-          <Link to="/login" state={{ from: location.pathname }} className="login-button">Login</Link>
-        </div>
+        <WatchlistPreview />
       </div>
     );
   }

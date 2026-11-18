@@ -23,14 +23,17 @@ const Header = () => {
     <div className='header'>
       <div className="header-logo">ShowTime</div>
       <div className="header-nav">
-        {authLoading ? null : currentUser ? (
+        {authLoading ? null : (
           <>
-            <span className="welcome-message">Welcome, {currentUser.name}</span>
+            {currentUser && <span className="welcome-message">Welcome, {currentUser.name}</span>}
+            {/* Shown to everyone: signed-out visitors get a preview of what it offers. */}
             <Link to="/watchlist" className="nav-link">Watchlist</Link>
-            <button onClick={handleLogout} className="logout-button">Logout</button>
+            {currentUser ? (
+              <button onClick={handleLogout} className="logout-button">Logout</button>
+            ) : (
+              <Link to="/login" className="login-button">Login</Link>
+            )}
           </>
-        ) : (
-          <Link to="/login" className="login-button">Login</Link>
         )}
       </div>
     </div>

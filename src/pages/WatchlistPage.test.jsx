@@ -28,10 +28,17 @@ const shownTitles = () => screen.queryAllByRole('heading', { level: 3 }).map((h)
 const param = (location, key) => new URLSearchParams(location.current.search).get(key);
 
 describe('WatchlistPage', () => {
-  it('asks signed-out visitors to log in', () => {
-    renderPage('/watchlist', { auth: { currentUser: null } });
-    expect(screen.getByRole('heading', { name: 'Please Login' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Login' })).toHaveAttribute('href', '/login');
+  it('shows signed-out visitors what the watchlist offers and how to get it', async () => {
+    const { location } = renderPage('/watchlist', { auth: { currentUser: null } });
+    expect(screen.getByRole('heading', { level: 1, name: /Never lose track/ })).toBeInTheDocument();
+    for (const feature of ['Save for later', "Mark what you've seen", 'Rate with stars', 'See your stats', 'Share your list']) {
+      expect(screen.getByRole('heading', { level: 2, name: feature })).toBeInTheDocument();
+    }
+    expect(screen.getByRole('link', { name: 'Create account' })).toHaveAttribute('href', '/signup');
+
+    await userEvent.click(screen.getByRole('link', { name: 'Log in' }));
+    expect(location.current.pathname).toBe('/login');
+    expect(location.current.state).toEqual({ from: '/watchlist' });
   });
 
   it('shows a message when the watchlist is empty', () => {

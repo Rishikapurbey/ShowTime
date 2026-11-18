@@ -41,6 +41,9 @@ const importLegacyWatchlist = async (fs, user) => {
   localStorage.removeItem(key);
 };
 
+const writeEntry = (fs, ref, { imdbID, Title, Poster, Year }) =>
+  fs.setDoc(ref, { imdbID, Title, Poster, Year, addedAt: fs.serverTimestamp() });
+
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   // True until Firebase reports whether someone is signed in, so pages don't flash "Please login".
@@ -124,19 +127,21 @@ export const AuthProvider = ({ children }) => {
   const logout = () => withAuth(({ auth, signOut }) => signOut(auth));
 
   // Firestore applies writes locally first, so the UI updates instantly via onSnapshot.
-  const addToWatchlist = ({ imdbID, Title, Poster, Year }) => {
+  const addToWatchlist = (movie) => {
     if (!currentUser) return;
     loadFirestore()
-      .then((fs) =>
-        fs.setDoc(fs.doc(watchlistRef(fs, currentUser.uid), imdbID), {
-          imdbID,
-          Title,
-          Poster,
-          Year,
-          addedAt: fs.serverTimestamp(),
-        })
-      )
+      .then((fs) => writeEntry(fs, fs.doc(watchlistRef(fs, currentUser.uid), movie.imdbID), movie))
       .catch((error) => console.error('Could not add to watchlist:', error));
+  };
+
+  // For the add that finishes a sign-in, before the list has loaded: the account may already
+  // have this movie, and rewriting it would erase its rating. Resolves to whether it was added.
+  const addToWatchlistIfMissing = async (movie) => {
+    const fs = await loadFirestore();
+    const ref = fs.doc(watchlistRef(fs, currentUser.uid), movie.imdbID);
+    if ((await fs.getDoc(ref)).exists()) return false;
+    await writeEntry(fs, ref, movie);
+    return true;
   };
 
   const removeFromWatchlist = (imdbID) => {
@@ -168,6 +173,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     watchlist,
     addToWatchlist,
+    addToWatchlistIfMissing,
     removeFromWatchlist,
     setWatched,
     setRating,

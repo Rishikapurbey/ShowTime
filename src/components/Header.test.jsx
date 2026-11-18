@@ -11,4 +11,16 @@ describe('Header', () => {
     expect(screen.queryByRole('link', { name: 'ShowTime' })).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'ShowTime' })).not.toBeInTheDocument();
   });
+
+  it('shows signed-out visitors the Watchlist link next to Login', () => {
+    renderWithAuth(<Header />, { auth: { currentUser: null } });
+    expect(screen.getByRole('link', { name: 'Watchlist' })).toHaveAttribute('href', '/watchlist');
+    expect(screen.getByRole('link', { name: 'Login' })).toHaveAttribute('href', '/login');
+    expect(screen.queryByRole('button', { name: 'Logout' })).not.toBeInTheDocument();
+  });
+
+  it('holds the links back until sign-in status is known', () => {
+    renderWithAuth(<Header />, { auth: { currentUser: null, authLoading: true } });
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+  });
 });
