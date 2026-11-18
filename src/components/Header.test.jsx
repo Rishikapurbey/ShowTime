@@ -1,6 +1,7 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithAuth } from '../test/renderWithAuth';
 import Header from './Header';
 
@@ -17,6 +18,13 @@ describe('Header', () => {
     expect(screen.getByRole('link', { name: 'Watchlist' })).toHaveAttribute('href', '/watchlist');
     expect(screen.getByRole('link', { name: 'Login' })).toHaveAttribute('href', '/login');
     expect(screen.queryByRole('button', { name: 'Logout' })).not.toBeInTheDocument();
+  });
+
+  it('remembers the current page, including its filters, when going to log in', async () => {
+    const { location } = renderWithAuth(<Header />, { route: '/watchlist?tab=watched', auth: { currentUser: null } });
+    await userEvent.click(screen.getByRole('link', { name: 'Login' }));
+    expect(location.current.pathname).toBe('/login');
+    expect(location.current.state).toEqual({ from: '/watchlist?tab=watched' });
   });
 
   it('holds the links back until sign-in status is known', () => {

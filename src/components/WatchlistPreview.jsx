@@ -12,8 +12,8 @@ const FEATURES = [
 
 // What signed-out visitors see at /watchlist.
 const WatchlistPreview = () => {
-  const { pathname } = useLocation();
-  const authState = { from: pathname };
+  const { pathname, search } = useLocation();
+  const authState = { from: pathname + search };
 
   return (
     <section className="watchlist-preview">

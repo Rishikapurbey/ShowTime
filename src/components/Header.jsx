@@ -31,7 +31,8 @@ const Header = () => {
             {currentUser ? (
               <button onClick={handleLogout} className="logout-button">Logout</button>
             ) : (
-              <Link to="/login" className="login-button">Login</Link>
+              // Login returns here afterwards.
+              <Link to="/login" state={{ from: location.pathname + location.search }} className="login-button">Login</Link>
             )}
           </>
         )}
