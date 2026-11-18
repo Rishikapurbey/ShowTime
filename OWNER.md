@@ -109,7 +109,7 @@ Vercel only hands out the website files. After that, all the work happens in the
 1. The browser loads the app and the movie page code.
 2. The app asks OMDb for the movie, unless it fetched it in the last 10 minutes.
 3. The page shows the poster, details, scores and links.
-4. The movie is added to Recently Viewed.
+4. If the person is signed in, the movie is added to Recently Viewed.
 5. If the person is signed in, their live watchlist tells the page whether the movie is already saved.
 
 ---
@@ -168,7 +168,7 @@ Versions are the ones installed at the snapshot.
 - **Featured Today banner:** one movie from a hand-picked list of 12, changing daily. It has the
   poster, rating, year, runtime, genre, plot, **More Info** and **+ Watchlist**.
 - **Search bar** below the banner.
-- **Recently Viewed** appears when there is history, with a **Clear** button.
+- **Recently Viewed** appears for signed-in people with history, with a **Clear** button.
 - **Curated rows:** Latest Movies, Hollywood Action, Romantic Comedies, Thrillers, Comedies, Family
   Movies, Crowd Pleasers and Animated Movies. These are really OMDb searches behind friendly names.
 - Rows scroll sideways. Arrow buttons appear on desktop when there is more to see.
@@ -267,9 +267,11 @@ Signed-out visitors see the same features as members, so they know what an accou
 
 ### Recently Viewed
 
-- Remembers the last 20 movies opened.
-- Signed-out history stays in that browser.
-- When you sign in, it merges into your account and then follows you across devices.
+- Remembers the last 20 movies opened while signed in, and follows you across devices.
+- Disappears when you log out and returns when you log in again.
+- Movies opened while logged out are not recorded or added later.
+- A movie page you are on when you log in counts as viewed.
+- Older browser-only history is deleted automatically.
 - It is never shown on public links.
 
 ### Other
@@ -816,6 +818,7 @@ and read `git status` before committing.
 | Rating implies watched | You can only rate something you have seen |
 | Same message for private and missing links | It does not reveal whether a name exists |
 | Recently viewed is never shared | It is more personal than a chosen watchlist |
+| Recently viewed is only for signed-in people | Logged-out browsing should not appear later or enter someone's account, especially on shared computers |
 | Show features to signed-out visitors | New visitors could not tell what an account offers |
 | Dialog before login | Visitors keep their place and new users can choose signup |
 | Auto-add after sign-in | They should not have to find the movie again |

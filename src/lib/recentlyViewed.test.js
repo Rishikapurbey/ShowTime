@@ -1,13 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import {
-  MAX_RECENT,
-  LOCAL_KEY,
-  addRecent,
-  mergeRecent,
-  sameRecent,
-  readLocalRecent,
-  writeLocalRecent,
-} from './recentlyViewed';
+import { describe, it, expect } from 'vitest';
+import { MAX_RECENT, LEGACY_LOCAL_KEY, addRecent, sameRecent, removeLegacyRecent } from './recentlyViewed';
 
 const movie = (n) => ({ imdbID: `tt${n}`, Title: `Movie ${n}`, Poster: 'N/A', Year: '2000' });
 const ids = (list) => list.map((m) => m.imdbID);
@@ -35,18 +27,6 @@ describe('addRecent', () => {
   });
 });
 
-describe('mergeRecent', () => {
-  it("keeps the first list's order and adds the rest without repeats", () => {
-    expect(ids(mergeRecent([movie(1), movie(2)], [movie(2), movie(3)]))).toEqual(['tt1', 'tt2', 'tt3']);
-  });
-
-  it(`caps the result at ${MAX_RECENT}`, () => {
-    const a = Array.from({ length: 15 }, (_, i) => movie(`a${i}`));
-    const b = Array.from({ length: 15 }, (_, i) => movie(`b${i}`));
-    expect(mergeRecent(a, b)).toHaveLength(MAX_RECENT);
-  });
-});
-
 describe('sameRecent', () => {
   it('compares by movie and order', () => {
     expect(sameRecent([movie(1), movie(2)], [movie(1), movie(2)])).toBe(true);
@@ -55,27 +35,10 @@ describe('sameRecent', () => {
   });
 });
 
-describe('local storage', () => {
-  beforeEach(() => localStorage.clear());
-
-  it('round-trips a list', () => {
-    writeLocalRecent([movie(1), movie(2)]);
-    expect(readLocalRecent()).toEqual([movie(1), movie(2)]);
-  });
-
-  it('removes the key when the list is emptied', () => {
-    writeLocalRecent([movie(1)]);
-    writeLocalRecent([]);
-    expect(localStorage.getItem(LOCAL_KEY)).toBeNull();
-  });
-
-  it('ignores missing or corrupted data', () => {
-    expect(readLocalRecent()).toEqual([]);
-    localStorage.setItem(LOCAL_KEY, '{not json');
-    expect(readLocalRecent()).toEqual([]);
-    localStorage.setItem(LOCAL_KEY, JSON.stringify({ not: 'a list' }));
-    expect(readLocalRecent()).toEqual([]);
-    localStorage.setItem(LOCAL_KEY, JSON.stringify([null, { Title: 'no id' }, movie(1)]));
-    expect(readLocalRecent()).toEqual([movie(1)]);
+describe('removeLegacyRecent', () => {
+  it('deletes the old signed-out history from the browser', () => {
+    localStorage.setItem(LEGACY_LOCAL_KEY, JSON.stringify([movie(1)]));
+    removeLegacyRecent();
+    expect(localStorage.getItem(LEGACY_LOCAL_KEY)).toBeNull();
   });
 });

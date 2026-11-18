@@ -21,7 +21,7 @@ Free to use · Nothing to install · No account needed to browse
 - See a new **featured movie** every day.
 - Browse rows of **latest movies, action, romantic comedies, thrillers, comedies, family movies, crowd pleasers and animation**.
 - **Search as you type**, and narrow results to movies or series.
-- Pick up where you left off with **Recently Viewed**.
+- Sign in to pick up where you left off with **Recently Viewed**.
 
 ### Decide if it's worth your time
 
@@ -72,7 +72,7 @@ Free to use · Nothing to install · No account needed to browse
 Yes.
 
 **Do I need an account?**
-No. You can browse, search and open movie pages without one. You only need an account to save movies, rate them and share a list.
+No. You can browse, search and open movie pages without one. You only need an account to save movies, rate them, share a list and keep your Recently Viewed history.
 
 **Can I watch full movies here?**
 No. ShowTime helps you discover and keep track of movies. **Watch Trailer** opens a YouTube search for the trailer.

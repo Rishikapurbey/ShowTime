@@ -186,8 +186,9 @@ Everything else is denied.
   5. `SignInPromptProvider` clears that state, calls `addToWatchlistIfMissing` and shows a `Toast`.
 - **Watched and ratings:** use `watchedFields` and `ratingFields` from `lib/watchlist.js`. Rating
   marks a movie watched. Un-marking watched clears the rating.
-- **Recently viewed:** movie pages call `recordView`. Signed-out history lives in localStorage under
-  `showtime_recently_viewed`. On sign-in it is merged into Firestore and removed locally.
+- **Recently viewed:** account-only. Movie pages call `recordView`, which saves to Firestore while
+  signed in and does nothing while signed out. The row disappears on logout and the same history
+  returns on login. The old `showtime_recently_viewed` localStorage key is deleted on app start.
 - **Sharing:** `useShareProfile` writes the name and profile in one batch. A rename deletes the old
   name in that same batch, which the rules require.
 
@@ -198,7 +199,8 @@ Everything else is denied.
 - **Never call `addToWatchlist` for a movie that may already be saved.** It uses `setDoc`, which
   replaces the document and erases `watched` and `rating`. After sign-in the list has not loaded, so
   use `addToWatchlistIfMissing`.
-- **Recently viewed stays private**, even while a watchlist is public.
+- **Recently viewed stays private**, even while a watchlist is public. Never show it or record it
+  while signed out, and never merge signed-out views into an account.
 - **A missing share link and a private share link must look identical** to visitors.
 - **Do not import Firebase statically into app code.** Use `loadAuth()` and `loadFirestore()` from
   `lib/firebase.js`, so the SDK stays out of the first page load.
