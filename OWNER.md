@@ -10,9 +10,9 @@ and `AGENTS.md` is the instruction sheet for AI coding tools. This guide is the 
 The flowcharts appear as pictures when you open this file on GitHub, or in VS Code with a Mermaid
 preview extension. Anywhere else they still read as simple text.
 
-**Snapshot:** written on 18 November 2026 at commit `2160856`. The app had about 4,900 lines of
-JavaScript including tests, and 185 app tests in 20 files, all passing. GitHub's checks, including
-the security rules tests, had passed on that commit. Things may have changed since, so trust the code
+**Snapshot:** checked on 18 November 2026 against commit `a02560e`. The app had about 4,500 lines of
+JavaScript including tests, and 166 app tests in 19 files, all passing. GitHub's checks, including
+the security rules tests, had passed on that commit. The live Firebase rules were published that day. Things may have changed since, so trust the code
 when it disagrees with this file.
 
 ## Contents
@@ -627,13 +627,24 @@ Check the **Actions** tab on GitHub and the live site afterwards.
 3. Run `npm run test:rules`, or let GitHub Actions run it if Java is not installed.
 4. Publish the rules. **Pushing to GitHub does not do this.**
 
+   The easiest way is to open https://console.firebase.google.com/project/showtime-251ef/firestore/rules,
+   replace everything in the editor with `firestore.rules`, and press **Publish**.
+
+   You can use the command line instead:
+
    ```bash
    npx firebase-tools login
    npx firebase-tools deploy --only firestore:rules --project showtime-251ef
    ```
 
-You can also paste the file into Firebase console > Firestore Database > Rules > Publish. If new
-website code depends on new rules, publish the rules first.
+5. Check that the rules are live by opening this address in a browser:
+
+   https://firestore.googleapis.com/v1/projects/showtime-251ef/databases/(default)/documents/usernames/zz_probe_name_404
+
+   `NOT_FOUND` is the good result. `PERMISSION_DENIED` means the live rules are still old.
+
+If new website code depends on new rules, publish the rules first. The Rules page also lists earlier
+published versions.
 
 ### Adding a saved watchlist field
 
@@ -661,7 +672,8 @@ Firebase, Vercel or OMDb accounts, so write that in your password manager.
 | Firebase | https://console.firebase.google.com/project/showtime-251ef | Users, database, rules and sign-in settings |
 | OMDb | https://www.omdbapi.com/apikey.aspx | Request or replace the API key |
 
-Menu names can change over the years, so look for the closest match.
+Menu names can change over the years, so look for the closest match. On 18 November 2026 the Firebase
+project was on the free **Spark** plan.
 
 ### Website settings
 
@@ -684,7 +696,7 @@ After changing a value in Vercel, **redeploy**. These values are built into the 
 - Authentication > Sign-in method: **Email/Password** and **Google** enabled.
 - Authentication > Settings > Authorized domains: must include `show-time-chi.vercel.app`, plus any
   future domain.
-- Firestore Database > Rules: must match `firestore.rules`.
+- Firestore rules: must match `firestore.rules`. Open them at https://console.firebase.google.com/project/showtime-251ef/firestore/rules.
 
 ### A quick health check, every few months
 
@@ -721,13 +733,15 @@ popups in the browser.
 
 ### Watchlist changes do not save
 
-Open the browser console. `permission-denied` usually means the live rules are out of date, so publish
-`firestore.rules`. Otherwise check Firebase's status and usage pages.
+The app shows a short "Couldn't..." message when a change fails. Open the browser console for details.
+`permission-denied` usually means the live rules are out of date, so publish `firestore.rules`.
+Otherwise check Firebase's status and usage pages.
 
 ### A share link says private or does not exist
 
 Check the exact name in the Watchlist page's share panel and make sure the switch says **Public**. An
-old name stops working after a rename.
+old name stops working after a rename. If every share link fails, check that the
+[live security rules are current](#changing-the-security-rules).
 
 ### A page gives a 404 on refresh
 
@@ -755,7 +769,7 @@ check `java -version`.
 ### Data was lost
 
 This repository has no backup job, so recovery depends on what is available in your Firebase project.
-Check Firestore's backup and recovery options in the console before changing anything else.
+Check the **Disaster recovery** tab in Firestore before changing anything else.
 
 ---
 
@@ -764,7 +778,8 @@ Check Firestore's backup and recovery options in the console before changing any
 Send it `AGENTS.md`, or open the project folder and say:
 
 > Read AGENTS.md first, then README.md and OWNER.md if you need more detail. Follow the rules there.
-> Discuss your plan with me if there are real choices. Do not commit or push until I ask. My task is:
+> Discuss your plan with me if there are real choices, and ask questions as multiple choice with your
+> recommendation first. Do not commit or push until I ask. My task is:
 > ...
 
 **What you can always ask for:**
@@ -792,7 +807,9 @@ and read `git status` before committing.
 | 6 October 2026 | Automated tests, GitHub Actions, Recently Viewed, tested security rules, share links, Stats and phone fixes |
 | 6 October 2026 | README rewrite and move from Netlify to Vercel |
 | 10 November 2026 | Back to Home links, unclickable logos, titled poster fallbacks, one main heading per page and clear-search button |
-| 18 November 2026 | Custom dropdowns, the signed-out watchlist experience with sign-in prompt, auto-add and preview page, a user-first README, and removal of Recently Viewed |
+| 18 November 2026 | Custom dropdowns, the signed-out watchlist experience with sign-in prompt, auto-add and preview page, and header login returning to the same page |
+| 18 November 2026 | User-first README, Recently Viewed removed, live Firebase rules brought up to date so share links work |
+| 18 November 2026 | Email-only Contact page, failed-save messages, automatic Latest Movies year, site icon and link preview |
 
 ### Decisions worth remembering
 
@@ -810,6 +827,8 @@ and read `git status` before committing.
 | Auto-add after sign-in | They should not have to find the movie again |
 | Check before auto-adding | Saving again would erase an existing rating |
 | Custom dropdown | The browser's version looked generic |
+| Contact page shows email only | Your phone number should not be public |
+| Latest Movies follows the current year | The row should not go out of date, and it falls back to last year if the new year has no results yet |
 | README starts with users, then technical detail | Visitors should see the value first, while GitHub readers still get architecture and setup |
 | README screenshots use a sample account | They show real movies without exposing your personal list |
 | Push directly to `main` | It is a solo personal project |
@@ -821,6 +840,9 @@ and read `git status` before committing.
 - Returning from sign-in opens the correct page but at the top.
 - The sign-in prompt was browser-tested with a simulated login and sample movies.
 - There is no account deletion, email verification or backup job in this repository.
+- Old Recently Viewed data may still exist in Firebase or visitors' browsers, but the app no longer uses
+  it.
+- Your old phone number remains in earlier Git history.
 
 ### Ideas, only if you want them
 

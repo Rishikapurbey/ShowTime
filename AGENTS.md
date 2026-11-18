@@ -15,10 +15,10 @@ npm install
 The other documents are `README.md` (public description and setup) and `OWNER.md` (the owner's
 plain-English record of the whole project). Update them when your work changes what they say.
 
-The repo is **public**. Never commit secrets, `.env.local`, personal email addresses or phone
-numbers.
+The repo is **public**. Never commit secrets, `.env.local`, phone numbers or personal email
+addresses. The only exception is the contact email already shown on the Contact page.
 
-**Snapshot:** written 18 November 2026 at commit `2160856`, with 185 app tests passing. Trust the
+**Snapshot:** checked 18 November 2026 against commit `a02560e`, with 166 app tests passing. Trust the
 code if it disagrees with this file, then correct this file.
 
 ---
@@ -150,7 +150,8 @@ The query client caches for 10 minutes, retries once and does not refetch on win
 src/api/         omdb.js (OMDb client, poster fallback), publicWatchlist.js
 src/components/  UI pieces, each with its own .css. Key ones: MovieCard, MovieList, HeroBanner,
                  CategoryRow, SearchBar, Dropdown, WatchedControls, StatsPanel,
-                 BarChart, SharePanel, SignInDialog, Toast, WatchlistPreview, Header, Footer
+                 BarChart, SharePanel, SignInDialog, Toast, WatchlistPreview, GoogleButton,
+                 Header, Footer
 src/context/     AuthProvider (auth + watchlist), SignInPromptProvider,
                  plus *-context.js files holding each context and hook
 src/hooks/       useDebounce, useShareProfile, useWatchlistToggle
@@ -183,6 +184,10 @@ Everything else is denied.
   3. The auth pages keep that state when switching between them.
   4. On success they navigate to `from` with state `{ addAfterSignIn: movie }`.
   5. `SignInPromptProvider` clears that state, calls `addToWatchlistIfMissing` and shows a `Toast`.
+- **Failed watchlist writes:** `AuthProvider` sets `watchlistError`, and `SignInPromptProvider` shows
+  its message in the shared `Toast`. Firestore restores the optimistic change by itself.
+- **Latest Movies:** `HomePage` passes the current year and the previous year as `fallbackYear`, so the
+  row stays filled early in a new year.
 - **Watched and ratings:** use `watchedFields` and `ratingFields` from `lib/watchlist.js`. Rating
   marks a movie watched. Un-marking watched clears the rating.
 - **Sharing:** `useShareProfile` writes the name and profile in one batch. A rename deletes the old
@@ -228,7 +233,6 @@ Dark cinema look. Reuse these values:
 - Toolbars use pill shapes (`border-radius: 20px`). Menus and dialogs use 12 to 14px corners.
 - **Use `Dropdown`, never a native `<select>`.** Use `SignInDialog`'s native `<dialog>` approach for
   modals and `Toast` for short confirmations. Never use `alert`, `confirm` or `prompt`.
-- `AuthProvider` reports failed watchlist writes through `watchlistError`, shown by the shared toast.
 - Shared buttons: `.cta-button` and `.cta-button.secondary` in `App.css`.
 - The red circle with a white tick is the "added or selected" mark.
 - Layouts must work from 320px phones to wide screens. The usual breakpoints are 768px and 480px.
@@ -270,6 +274,21 @@ Dark cinema look. Reuse these values:
   If a website change depends on new rules, publish the rules first. Give the owner this step in the
   same message, because the site will otherwise fail with permission errors.
 
+  The Firebase CLI is not logged in on the owner's computer. The owner has been publishing by pasting
+  the file at https://console.firebase.google.com/project/showtime-251ef/firestore/rules. Rules were last published on
+  18 November 2026 and matched `firestore.rules` at this snapshot.
+
+  To check the live rules, request a missing share name without signing in:
+
+  ```bash
+  curl -s 'https://firestore.googleapis.com/v1/projects/showtime-251ef/databases/(default)/documents/usernames/zz_probe_name_404'
+  ```
+
+  `NOT_FOUND` means the share-link rules are live. `PERMISSION_DENIED` means the live rules are out of
+  date.
+- **Link previews:** `index.html` contains absolute `show-time-chi.vercel.app` URLs. Update them if the
+  domain changes. Static files in `public/` are served before the `vercel.json` rewrite.
+
 ---
 
 ## 10. Gotchas already learned
@@ -303,4 +322,7 @@ Start these only if the owner asks.
 - After signing in from a prompt, visitors return to the right page but at the top of it.
 - The sign-in prompt was browser-tested with a simulated login and sample movie data.
 - There is no account deletion, no email verification and no backup job in this repo.
+- Recently Viewed was removed on purpose. Do not bring it back unless the owner asks. Old
+  `users/{uid}/history/recent` documents or `showtime_recently_viewed` browser data may still exist,
+  unused.
 - Possible later work: a small server function to hide the OMDb key.
