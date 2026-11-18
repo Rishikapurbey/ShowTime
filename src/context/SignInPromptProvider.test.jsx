@@ -18,9 +18,6 @@ vi.mock('../api/omdb', async (importOriginal) => ({
   ...(await importOriginal()),
   getMovieDetails: vi.fn(),
 }));
-vi.mock('../context/recently-viewed-context', () => ({
-  useRecentlyViewed: () => ({ recordView: vi.fn() }),
-}));
 
 const MOVIE = { imdbID: 'tt1', Title: 'Inception', Year: '2010', Poster: 'N/A' };
 const USER = { uid: 'u1', name: 'Me', email: 'me@example.com' };

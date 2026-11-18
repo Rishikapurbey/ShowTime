@@ -34,7 +34,7 @@ A dark, cinema-styled single-page web app for discovering movies and tracking wh
   `firestore.rules` is the only server-side protection.
 
 Main features: daily featured movie, curated rows, live search with filters, detailed movie pages,
-recently viewed, email and Google sign-in, synced watchlist, watched status, 1 to 5 star ratings,
+email and Google sign-in, synced watchlist, watched status, 1 to 5 star ratings,
 sorting and filtering, stats, public share links at `/u/:username`, and a sign-in prompt that shows
 signed-out visitors what they are missing.
 
@@ -127,8 +127,7 @@ No Tailwind, CSS modules, component library, Redux or state library. Do not add 
 
 ### Provider order
 
-`src/main.jsx`: `QueryClientProvider` > `AuthProvider` > `RecentlyViewedProvider` > `BrowserRouter` >
-`App`. `src/App.jsx` wraps the layout in `SignInPromptProvider`, because that provider needs the
+`src/main.jsx`: `QueryClientProvider` > `AuthProvider` > `BrowserRouter` > `App`. `src/App.jsx` wraps the layout in `SignInPromptProvider`, because that provider needs the
 router. `HomePage` is in the main bundle. Every other page is loaded with `lazy()`.
 
 The query client caches for 10 minutes, retries once and does not refetch on window focus.
@@ -150,13 +149,13 @@ The query client caches for 10 minutes, retries once and does not refetch on win
 ```
 src/api/         omdb.js (OMDb client, poster fallback), publicWatchlist.js
 src/components/  UI pieces, each with its own .css. Key ones: MovieCard, MovieList, HeroBanner,
-                 CategoryRow, RecentlyViewedRow, SearchBar, Dropdown, WatchedControls, StatsPanel,
+                 CategoryRow, SearchBar, Dropdown, WatchedControls, StatsPanel,
                  BarChart, SharePanel, SignInDialog, Toast, WatchlistPreview, Header, Footer
-src/context/     AuthProvider (auth + watchlist), RecentlyViewedProvider, SignInPromptProvider,
+src/context/     AuthProvider (auth + watchlist), SignInPromptProvider,
                  plus *-context.js files holding each context and hook
 src/hooks/       useDebounce, useShareProfile, useWatchlistToggle
 src/lib/         firebase.js (lazy SDK loaders), watchlist.js, stats.js, share.js,
-                 recentlyViewed.js, authErrors.js
+                 authErrors.js
 src/pages/       Route pages, plus AuthForm.css shared by login and signup
 src/test/        setup.js, renderWithAuth.jsx, backToHome.test.jsx
 rules-tests/     Firestore rules tests
@@ -168,7 +167,6 @@ firestore.rules  All database security rules
 | Path | Fields | Read access | Write access |
 | --- | --- | --- | --- |
 | `users/{uid}/watchlist/{imdbID}` | `imdbID`, `Title`, `Poster`, `Year`, `addedAt`, optional `watched` (bool), optional `rating` (1 to 5 or null) | Owner, or anyone while the owner's profile is public | Owner, with validated fields |
-| `users/{uid}/history/recent` | `movies` (up to 20) | Owner only, never shared | Owner |
 | `usernames/{name}` | `uid` | `get` by anyone, no listing | Claimed with a matching profile in one batch |
 | `profiles/{uid}` | `username`, `public` | Owner, or anyone while public | Owner, name must belong to them |
 
@@ -186,9 +184,6 @@ Everything else is denied.
   5. `SignInPromptProvider` clears that state, calls `addToWatchlistIfMissing` and shows a `Toast`.
 - **Watched and ratings:** use `watchedFields` and `ratingFields` from `lib/watchlist.js`. Rating
   marks a movie watched. Un-marking watched clears the rating.
-- **Recently viewed:** account-only. Movie pages call `recordView`, which saves to Firestore while
-  signed in and does nothing while signed out. The row disappears on logout and the same history
-  returns on login. The old `showtime_recently_viewed` localStorage key is deleted on app start.
 - **Sharing:** `useShareProfile` writes the name and profile in one batch. A rename deletes the old
   name in that same batch, which the rules require.
 
@@ -199,8 +194,6 @@ Everything else is denied.
 - **Never call `addToWatchlist` for a movie that may already be saved.** It uses `setDoc`, which
   replaces the document and erases `watched` and `rating`. After sign-in the list has not loaded, so
   use `addToWatchlistIfMissing`.
-- **Recently viewed stays private**, even while a watchlist is public. Never show it or record it
-  while signed out, and never merge signed-out views into an account.
 - **A missing share link and a private share link must look identical** to visitors.
 - **Do not import Firebase statically into app code.** Use `loadAuth()` and `loadFirestore()` from
   `lib/firebase.js`, so the SDK stays out of the first page load.
@@ -279,8 +272,7 @@ Dark cinema look. Reuse these values:
 
 ## 10. Gotchas already learned
 
-- `USERNAME_PATTERN` exists in both `lib/share.js` and `firestore.rules`. `MAX_RECENT` (20) is also
-  enforced in the rules. Change both sides together.
+- `USERNAME_PATTERN` exists in both `lib/share.js` and `firestore.rules`. Change both together.
 - A new watchlist field must be added to `validEntry` in `firestore.rules`, because it uses
   `hasOnly`. Add rules tests and publish the rules.
 - `MovieCard` is one big link, so controls inside it must call `preventDefault` and

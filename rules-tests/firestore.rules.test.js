@@ -117,31 +117,6 @@ describe('watchlist', () => {
       await assertFails(updateDoc(doc(as('bob'), 'users/alice/watchlist/tt1'), { rating: 1 }));
       await assertFails(deleteDoc(doc(as('bob'), 'users/alice/watchlist/tt1')));
     });
-
-    it("never exposes recently viewed, even while shared", async () => {
-      await seed({
-        'usernames/alice': { uid: 'alice' },
-        'profiles/alice': { username: 'alice', public: true },
-        'users/alice/history/recent': { movies: [] },
-      });
-      await assertFails(getDoc(doc(as('bob'), 'users/alice/history/recent')));
-    });
-  });
-});
-
-describe('recently viewed', () => {
-  const movies = (n) => Array.from({ length: n }, (_, i) => ({ imdbID: `tt${i}` }));
-
-  it('lets a user keep up to 20 movies', async () => {
-    const db = as('alice');
-    await assertSucceeds(setDoc(doc(db, 'users/alice/history/recent'), { movies: movies(20) }));
-    await assertSucceeds(getDoc(doc(db, 'users/alice/history/recent')));
-  });
-
-  it('rejects more than 20, extra fields, or other users', async () => {
-    await assertFails(setDoc(doc(as('alice'), 'users/alice/history/recent'), { movies: movies(21) }));
-    await assertFails(setDoc(doc(as('alice'), 'users/alice/history/recent'), { movies: [], note: 'x' }));
-    await assertFails(setDoc(doc(as('bob'), 'users/alice/history/recent'), { movies: [] }));
   });
 });
 

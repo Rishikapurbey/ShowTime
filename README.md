@@ -10,7 +10,7 @@ Free to use · Nothing to install · No account needed to browse
 
 [What you can do](#what-you-can-do) · [Screenshots](#screenshots) · [Questions](#quick-questions) · [Built with](#built-with) · [Architecture](#architecture) · [Run it locally](#run-it-locally)
 
-<img src="docs/screenshots/home.jpg" alt="ShowTime homepage with a featured movie, search bar and Recently Viewed posters" width="100%">
+<img src="docs/screenshots/home.jpg" alt="ShowTime homepage with a featured movie, search bar and rows of movie posters" width="100%">
 
 </div>
 
@@ -21,7 +21,6 @@ Free to use · Nothing to install · No account needed to browse
 - See a new **featured movie** every day.
 - Browse rows of **latest movies, action, romantic comedies, thrillers, comedies, family movies, crowd pleasers and animation**.
 - **Search as you type**, and narrow results to movies or series.
-- Sign in to pick up where you left off with **Recently Viewed**.
 
 ### Decide if it's worth your time
 
@@ -72,13 +71,13 @@ Free to use · Nothing to install · No account needed to browse
 Yes.
 
 **Do I need an account?**
-No. You can browse, search and open movie pages without one. You only need an account to save movies, rate them, share a list and keep your Recently Viewed history.
+No. You can browse, search and open movie pages without one. You only need an account to save movies, rate them and share a list.
 
 **Can I watch full movies here?**
 No. ShowTime helps you discover and keep track of movies. **Watch Trailer** opens a YouTube search for the trailer.
 
 **Who can see my watchlist?**
-Only you, unless you turn on sharing. Anyone with your link can then see your lists and ratings. Your Recently Viewed history stays private.
+Only you, unless you turn on sharing. Anyone with your link can then see your lists and ratings.
 
 **Where does the movie information come from?**
 Movie details, posters and scores come from the [OMDb API](https://www.omdbapi.com/), so some details may be missing for some titles.
@@ -102,7 +101,7 @@ flowchart LR
   User["Browser"] --> App["React app"]
   Vercel["Vercel"] -->|"serves the website"| User
   App -->|"TanStack Query, 10-minute cache"| OMDb[("OMDb API")]
-  App --> Providers["Auth, Recently Viewed and Sign-in Prompt providers"]
+  App --> Providers["Auth and Sign-in Prompt providers"]
   Providers -->|"loaded on demand"| Auth["Firebase Authentication"]
   Providers -->|"live sync"| Firestore[("Cloud Firestore")]
   App -->|"public watchlist page"| Firestore
@@ -161,9 +160,9 @@ flowchart TD
 src/
 ├── api/          OMDb client and public watchlist loader
 ├── components/   Movie cards and rows, dropdowns, ratings, charts, sharing and sign-in dialog
-├── context/      Auth and watchlist, Recently Viewed and sign-in prompt providers
+├── context/      Auth and watchlist, and sign-in prompt providers
 ├── hooks/        Debounced input, share settings and watchlist button behavior
-├── lib/          Firebase loader, stats, sharing, history and sign-in error helpers
+├── lib/          Firebase loader, stats, sharing and sign-in error helpers
 ├── pages/        Home, movie, watchlist, public watchlist, login, signup, contact and 404
 └── test/         Shared test setup and helpers
 rules-tests/      Firestore security rules tests

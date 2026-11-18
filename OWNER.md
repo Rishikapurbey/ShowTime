@@ -96,7 +96,7 @@ flowchart LR
   User --> App["ShowTime React app, running in the browser"]
   App -->|"movie search and details"| OMDb[("OMDb API")]
   App -->|"sign in"| Auth["Firebase Authentication"]
-  App -->|"watchlists, history, share links"| Firestore[("Cloud Firestore")]
+  App -->|"watchlists and share links"| Firestore[("Cloud Firestore")]
   Rules{{"firestore.rules"}} -.->|"checks every read and write"| Firestore
   GitHub["GitHub: main branch"] -->|"every push"| Vercel
   GitHub -->|"every push"| CI["GitHub Actions checks"]
@@ -109,8 +109,7 @@ Vercel only hands out the website files. After that, all the work happens in the
 1. The browser loads the app and the movie page code.
 2. The app asks OMDb for the movie, unless it fetched it in the last 10 minutes.
 3. The page shows the poster, details, scores and links.
-4. If the person is signed in, the movie is added to Recently Viewed.
-5. If the person is signed in, their live watchlist tells the page whether the movie is already saved.
+4. If the person is signed in, their live watchlist tells the page whether the movie is already saved.
 
 ---
 
@@ -134,7 +133,7 @@ Versions are the ones installed at the snapshot.
 | Technology | Version | What it does here | Why it was chosen |
 | --- | --- | --- | --- |
 | Firebase Authentication | SDK 12.19 | Email, password and Google sign-in | No login server to build or secure |
-| Cloud Firestore | SDK 12.19 | Stores watchlists, history and share links | Live sync across devices without a backend |
+| Cloud Firestore | SDK 12.19 | Stores watchlists and share links | Live sync across devices without a backend |
 | Firestore Security Rules | Rules v2 | Decide who can read and write what | Required when the browser talks to the database directly |
 
 ### Building and checking
@@ -168,7 +167,6 @@ Versions are the ones installed at the snapshot.
 - **Featured Today banner:** one movie from a hand-picked list of 12, changing daily. It has the
   poster, rating, year, runtime, genre, plot, **More Info** and **+ Watchlist**.
 - **Search bar** below the banner.
-- **Recently Viewed** appears for signed-in people with history, with a **Clear** button.
 - **Curated rows:** Latest Movies, Hollywood Action, Romantic Comedies, Thrillers, Comedies, Family
   Movies, Crowd Pleasers and Animated Movies. These are really OMDb searches behind friendly names.
 - Rows scroll sideways. Arrow buttons appear on desktop when there is more to see.
@@ -264,15 +262,6 @@ Signed-out visitors see the same features as members, so they know what an accou
 - Visitors see To watch and Watched tabs with read-only stars. No sign-in is needed.
 - Private and non-existent links show the same message, so nobody can tell which it is.
 - When you open your own link, a note says this is how others see it.
-
-### Recently Viewed
-
-- Remembers the last 20 movies opened while signed in, and follows you across devices.
-- Disappears when you log out and returns when you log in again.
-- Movies opened while logged out are not recorded or added later.
-- A movie page you are on when you log in counts as viewed.
-- Older browser-only history is deleted automatically.
-- It is never shown on public links.
 
 ### Other
 
@@ -370,12 +359,11 @@ flowchart TD
 
 ## 8. The database
 
-Firestore stores documents inside collections. There are four kinds of data.
+Firestore stores documents inside collections. There are three kinds of data.
 
 | Location | What it holds | Who can read | Who can write |
 | --- | --- | --- | --- |
 | `users/{uid}/watchlist/{imdbID}` | One saved movie | You, or anyone while sharing is on | You |
-| `users/{uid}/history/recent` | Your last 20 viewed movies | Only you | Only you |
 | `usernames/{name}` | Which account owns a share name | Anyone, one exact name at a time | The person claiming or releasing it |
 | `profiles/{uid}` | Your share name and public setting | You, or anyone while public | You |
 
@@ -392,7 +380,6 @@ Firestore stores documents inside collections. There are four kinds of data.
 ### Rules the database enforces
 
 - Only known watchlist fields are accepted, and ratings must be valid.
-- Recently viewed holds at most 20 movies.
 - Nobody can list all usernames.
 - Names must match 3 to 20 lowercase letters, numbers or underscores.
 - A person's name and profile must be saved together, and a name cannot be taken from someone else.
@@ -415,7 +402,6 @@ ShowTime/
 │   ├── components/              Reusable parts of the screen
 │   ├── context/
 │   │   ├── AuthProvider.jsx     Sign-in and watchlist data
-│   │   ├── RecentlyViewedProvider.jsx
 │   │   └── SignInPromptProvider.jsx   Dialog, auto-add and confirmation
 │   ├── hooks/
 │   │   ├── useDebounce.js       Waits for typing to pause
@@ -426,7 +412,6 @@ ShowTime/
 │   │   ├── watchlist.js         Watched and rating rules
 │   │   ├── stats.js             Stats calculations
 │   │   ├── share.js             Share name checks
-│   │   ├── recentlyViewed.js    History helpers
 │   │   └── authErrors.js        Friendly sign-in errors
 │   ├── pages/                   One file per page
 │   └── test/                    Shared test setup
@@ -482,7 +467,7 @@ Email and password sign-up and login, Google popup, password reset email, sign-o
 
 ### Cloud Firestore
 
-Live watchlist, live share settings, live recently viewed, single-document checks, batched share-link
+Live watchlist, live share settings, single-document checks, batched share-link
 writes and public list reads.
 
 ### Links that simply open another site
@@ -496,7 +481,6 @@ YouTube search for trailers, IMDb movie pages, and Google Fonts for the Oswald f
 ### Promises the app should keep
 
 - Your watchlist is private unless you turn sharing on.
-- Recently Viewed is never public.
 - Only you can change your list.
 - Others cannot find all usernames or discover whether a private link exists.
 
@@ -527,7 +511,6 @@ YouTube search for trailers, IMDb movie pages, and Google Fonts for the Oswald f
 | Search page size | 10 | OMDb and `RESULTS_PER_PAGE` |
 | Featured movies | 12, changing daily | `HeroBanner.jsx` |
 | Homepage requests on empty cache | About 9 | Banner plus 8 rows |
-| Recently viewed | 20 | `lib/recentlyViewed.js` and rules |
 | Rating | 1 to 5 whole stars | Rules and `WatchedControls` |
 | Share name | 3 to 20 characters | `lib/share.js` and rules |
 | Minimum password | 6 characters | Sign-up form and Firebase |
@@ -805,7 +788,7 @@ and read `git status` before committing.
 | 6 October 2026 | Automated tests, GitHub Actions, Recently Viewed, tested security rules, share links, Stats and phone fixes |
 | 6 October 2026 | README rewrite and move from Netlify to Vercel |
 | 10 November 2026 | Back to Home links, unclickable logos, titled poster fallbacks, one main heading per page and clear-search button |
-| 18 November 2026 | Custom dropdowns, then the signed-out watchlist experience with sign-in prompt, auto-add and preview page |
+| 18 November 2026 | Custom dropdowns, the signed-out watchlist experience with sign-in prompt, auto-add and preview page, a user-first README, and removal of Recently Viewed |
 
 ### Decisions worth remembering
 
@@ -817,8 +800,7 @@ and read `git status` before committing.
 | Filters and tabs in the address | Back, refresh and shared links keep the view |
 | Rating implies watched | You can only rate something you have seen |
 | Same message for private and missing links | It does not reveal whether a name exists |
-| Recently viewed is never shared | It is more personal than a chosen watchlist |
-| Recently viewed is only for signed-in people | Logged-out browsing should not appear later or enter someone's account, especially on shared computers |
+| Recently Viewed was removed | You decided the app did not need it, which also keeps the homepage and saved data simpler |
 | Show features to signed-out visitors | New visitors could not tell what an account offers |
 | Dialog before login | Visitors keep their place and new users can choose signup |
 | Auto-add after sign-in | They should not have to find the movie again |
