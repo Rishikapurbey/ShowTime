@@ -49,6 +49,8 @@ export const AuthProvider = ({ children }) => {
   // True until Firebase reports whether someone is signed in, so pages don't flash "Please login".
   const [authLoading, setAuthLoading] = useState(isFirebaseConfigured);
   const [watchlist, setWatchlist] = useState([]);
+  // The latest failed watchlist change, as { message }. A new object each time, so repeats show.
+  const [watchlistError, setWatchlistError] = useState(null);
 
   useEffect(() => {
     if (!isFirebaseConfigured) return;
@@ -126,13 +128,20 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => withAuth(({ auth, signOut }) => signOut(auth));
 
-  // Firestore applies writes locally first, so the UI updates instantly via onSnapshot.
-  const addToWatchlist = (movie) => {
+  // Firestore applies writes locally first, so the UI updates instantly via onSnapshot and
+  // puts things back by itself if the server refuses; the message explains why they changed.
+  const writeWatchlist = (write, message) => {
     if (!currentUser) return;
     loadFirestore()
-      .then((fs) => writeEntry(fs, fs.doc(watchlistRef(fs, currentUser.uid), movie.imdbID), movie))
-      .catch((error) => console.error('Could not add to watchlist:', error));
+      .then((fs) => write(fs, watchlistRef(fs, currentUser.uid)))
+      .catch((error) => {
+        console.error(`${message}:`, error);
+        setWatchlistError({ message: `${message}. Please try again.` });
+      });
   };
+
+  const addToWatchlist = (movie) =>
+    writeWatchlist((fs, list) => writeEntry(fs, fs.doc(list, movie.imdbID), movie), `Couldn't add ${movie.Title}`);
 
   // For the add that finishes a sign-in, before the list has loaded: the account may already
   // have this movie, and rewriting it would erase its rating. Resolves to whether it was added.
@@ -144,20 +153,11 @@ export const AuthProvider = ({ children }) => {
     return true;
   };
 
-  const removeFromWatchlist = (imdbID) => {
-    if (!currentUser) return;
-    loadFirestore()
-      .then((fs) => fs.deleteDoc(fs.doc(watchlistRef(fs, currentUser.uid), imdbID)))
-      .catch((error) => console.error('Could not remove from watchlist:', error));
-  };
+  const removeFromWatchlist = (imdbID) =>
+    writeWatchlist((fs, list) => fs.deleteDoc(fs.doc(list, imdbID)), "Couldn't remove that movie");
 
-  // Firestore applies writes locally first, so the UI updates instantly via onSnapshot.
-  const updateWatchlistEntry = (imdbID, fields) => {
-    if (!currentUser) return;
-    loadFirestore()
-      .then((fs) => fs.updateDoc(fs.doc(watchlistRef(fs, currentUser.uid), imdbID), fields))
-      .catch((error) => console.error('Could not update watchlist entry:', error));
-  };
+  const updateWatchlistEntry = (imdbID, fields) =>
+    writeWatchlist((fs, list) => fs.updateDoc(fs.doc(list, imdbID), fields), "Couldn't save your change");
 
   const setWatched = (imdbID, watched) => updateWatchlistEntry(imdbID, watchedFields(watched));
 
@@ -172,6 +172,7 @@ export const AuthProvider = ({ children }) => {
     resetPassword,
     logout,
     watchlist,
+    watchlistError,
     addToWatchlist,
     addToWatchlistIfMissing,
     removeFromWatchlist,

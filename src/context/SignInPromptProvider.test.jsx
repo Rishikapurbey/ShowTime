@@ -28,13 +28,14 @@ const ShowLocation = () => {
 };
 
 // Signing in really changes the user here, as it does with Firebase.
-const FakeAuth = ({ initialUser, authLoading, addResult, added, children }) => {
+const FakeAuth = ({ initialUser, authLoading, addResult, added, watchlistError, children }) => {
   const [currentUser, setCurrentUser] = useState(initialUser);
   const signIn = async () => setCurrentUser(USER);
   const value = {
     currentUser,
     authLoading,
     watchlist: [],
+    watchlistError,
     login: signIn,
     signup: signIn,
     loginWithGoogle: signIn,
@@ -49,12 +50,12 @@ const FakeAuth = ({ initialUser, authLoading, addResult, added, children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-const setup = ({ user = null, authLoading = false, route = '/browse?q=dream', addResult = async () => true } = {}) => {
+const setup = ({ user = null, authLoading = false, route = '/browse?q=dream', addResult = async () => true, watchlistError } = {}) => {
   const added = vi.fn();
   getMovieDetails.mockResolvedValue({ ...MOVIE, Plot: 'Dreams.', Runtime: '148 min', imdbRating: '8.8' });
   render(
     <QueryClientProvider client={new QueryClient()}>
-      <FakeAuth initialUser={user} authLoading={authLoading} addResult={addResult} added={added}>
+      <FakeAuth initialUser={user} authLoading={authLoading} addResult={addResult} added={added} watchlistError={watchlistError}>
         <MemoryRouter initialEntries={[route]}>
           <SignInPromptProvider>
             <ShowLocation />
@@ -169,6 +170,11 @@ describe('signing in to save a movie', () => {
     await userEvent.click(within(await dialog()).getByRole('link', { name: 'Log in' }));
     await logIn();
     expect(await screen.findByText('Inception was already on your watchlist.')).toBeInTheDocument();
+  });
+
+  it('shows a failed watchlist change to signed-in users', async () => {
+    setup({ user: USER, watchlistError: { message: "Couldn't add Inception. Please try again." } });
+    expect(await screen.findByText("Couldn't add Inception. Please try again.")).toBeInTheDocument();
   });
 
   it('reports a failed add', async () => {

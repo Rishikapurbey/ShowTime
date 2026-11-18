@@ -9,8 +9,9 @@ const TOAST_MS = 5000;
 
 // Owns the "sign in to save this" flow: the dialog, then finishing the add once the visitor
 // is back from the login or signup page (which return the movie in the router state).
+// Its toast also reports watchlist changes that failed.
 export const SignInPromptProvider = ({ children }) => {
-  const { currentUser, addToWatchlistIfMissing } = useAuth();
+  const { currentUser, addToWatchlistIfMissing, watchlistError } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [promptMovie, setPromptMovie] = useState(null);
@@ -45,6 +46,10 @@ export const SignInPromptProvider = ({ children }) => {
       }
     );
   }, [movieToAdd, currentUser, location, navigate, addToWatchlistIfMissing]);
+
+  useEffect(() => {
+    if (watchlistError) setToast({ message: watchlistError.message });
+  }, [watchlistError]);
 
   useEffect(() => {
     if (!toast) return;

@@ -162,6 +162,20 @@ describe('AuthProvider', () => {
       expect(fb.firestoreSdk.setDoc).not.toHaveBeenCalled();
     });
 
+    it.each([
+      ['add', 'setDoc', (c) => c.addToWatchlist({ imdbID: 'tt1', Title: 'Inception' }), "Couldn't add Inception. Please try again."],
+      ['remove', 'deleteDoc', (c) => c.removeFromWatchlist('tt1'), "Couldn't remove that movie. Please try again."],
+      ['rating', 'updateDoc', (c) => c.setRating('tt1', 4), "Couldn't save your change. Please try again."],
+      ['watched change', 'updateDoc', (c) => c.setWatched('tt1', true), "Couldn't save your change. Please try again."],
+    ])('reports a failed %s', async (_, method, action, message) => {
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+      fb.firestoreSdk[method].mockRejectedValue(new Error('denied'));
+      const ctx = await signIn();
+      await act(async () => action(ctx.current));
+      await waitFor(() => expect(ctx.current.watchlistError).toEqual({ message }));
+      consoleError.mockRestore();
+    });
+
     it('removes a movie', async () => {
       const ctx = await signIn();
       ctx.current.removeFromWatchlist('tt1');

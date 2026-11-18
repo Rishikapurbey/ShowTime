@@ -14,10 +14,6 @@ const ContactPage = () => {
             <h3>📧 Email</h3>
             <a href="mailto:rishikapurbey712@gmail.com">rishikapurbey712@gmail.com</a>
           </div>
-          <div className="contact-method">
-            <h3>📞 Phone</h3>
-            <a href="tel:+919064354402">+91 9064354402</a>
-          </div>
         </div>
       </div>
     </div>

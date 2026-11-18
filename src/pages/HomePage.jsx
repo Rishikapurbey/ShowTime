@@ -9,6 +9,8 @@ import CategoryRow from '../components/CategoryRow';
 import HeroBanner from '../components/HeroBanner';
 import './HomePage.css';
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 const TYPE_FILTERS = [
   { value: '', label: 'All' },
   { value: 'movie', label: 'Movies' },
@@ -76,7 +78,7 @@ const HomePage = () => {
 
       {!isSearching ? (
         <>
-          <CategoryRow title="Latest Movies" searchTerm="movie" year="2025" />
+          <CategoryRow title="Latest Movies" searchTerm="movie" year={CURRENT_YEAR} fallbackYear={CURRENT_YEAR - 1} />
           <CategoryRow title="Hollywood Action" searchTerm="action" />
           <CategoryRow title="Romantic Comedies" searchTerm="romantic comedy" />
           <CategoryRow title="Thrillers" searchTerm="thriller" />

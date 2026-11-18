@@ -165,6 +165,7 @@ src/
 ├── lib/          Firebase loader, stats, sharing and sign-in error helpers
 ├── pages/        Home, movie, watchlist, public watchlist, login, signup, contact and 404
 └── test/         Shared test setup and helpers
+public/           Site icons and link preview image
 rules-tests/      Firestore security rules tests
 docs/screenshots/ Images used in this README
 firestore.rules   Database security rules

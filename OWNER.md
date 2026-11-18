@@ -167,7 +167,7 @@ Versions are the ones installed at the snapshot.
 - **Featured Today banner:** one movie from a hand-picked list of 12, changing daily. It has the
   poster, rating, year, runtime, genre, plot, **More Info** and **+ Watchlist**.
 - **Search bar** below the banner.
-- **Curated rows:** Latest Movies, Hollywood Action, Romantic Comedies, Thrillers, Comedies, Family
+- **Curated rows:** Latest Movies (current year automatically), Hollywood Action, Romantic Comedies, Thrillers, Comedies, Family
   Movies, Crowd Pleasers and Animated Movies. These are really OMDb searches behind friendly names.
 - Rows scroll sideways. Arrow buttons appear on desktop when there is more to see.
 - Grey placeholder cards show while movies load.
@@ -265,7 +265,9 @@ Signed-out visitors see the same features as members, so they know what an accou
 
 ### Other
 
-- **Contact page:** email and phone link, hard-coded in `src/pages/ContactPage.jsx`.
+- **Contact page:** your email link, hard-coded in `src/pages/ContactPage.jsx`.
+- **Failed saves:** if adding, removing, rating or marking a movie fails, a short message says so.
+- **Site icon and link preview:** browser tabs show the ShowTime icon, and shared links can show a title, description and image.
 - **404 page:** "Lost in the multiverse?" with a link home.
 - **Works without Firebase:** browsing continues and account actions explain they are unavailable.
 - **Accessibility:** keyboard-friendly controls, labelled charts, screen-reader roles and reduced
@@ -416,6 +418,7 @@ ShowTime/
 │   ├── pages/                   One file per page
 │   └── test/                    Shared test setup
 ├── rules-tests/                 Security rules tests
+├── public/                      Site icons and link preview image
 ├── docs/screenshots/            Pictures used in the README
 ├── .github/workflows/ci.yml     Automatic checks
 ├── firestore.rules              Database security rules
@@ -446,6 +449,8 @@ ShowTime/
 | Stats | `src/lib/stats.js`, `src/components/StatsPanel.jsx` |
 | Sign-in error wording | `src/lib/authErrors.js` |
 | Contact details | `src/pages/ContactPage.jsx` |
+| Site description and link preview | `index.html`, `public/og-image.jpg` |
+| Browser icon | `public/favicon.svg`, `public/apple-touch-icon.png` |
 | Security | `firestore.rules`, then its tests and a manual publish |
 
 ---
@@ -495,8 +500,8 @@ YouTube search for trailers, IMDb movie pages, and Google Fonts for the Oswald f
 - **Firebase web settings** identify the project and are not passwords.
 - **The OMDb key** is included in the website's JavaScript, so a determined person could copy it. The
   worst likely result is using up the daily allowance. Replace the key if that happens.
-- **The contact email and phone** are visible on the Contact page and in this public repository's
-  code. Remove them from `ContactPage.jsx` if you no longer want them public.
+- **The contact email** is visible on the Contact page and in this public repository's code. Your
+  phone number was removed from the page, but it remains in older Git history.
 
 ---
 
@@ -694,7 +699,6 @@ After changing a value in Vercel, **redeploy**. These values are built into the 
 
 - [ ] Confirm your logins and the OMDb key still work.
 - [ ] Check whether Node.js, Firebase or Vercel announced end-of-support dates.
-- [ ] Update the "Latest Movies" year in `HomePage.jsx`.
 
 ---
 
@@ -813,7 +817,6 @@ and read `git status` before committing.
 
 ### Known limits
 
-- "Latest Movies" is fixed to 2025 in `HomePage.jsx`.
 - The OMDb key is visible in website code.
 - Returning from sign-in opens the correct page but at the top.
 - The sign-in prompt was browser-tested with a simulated login and sample movies.
@@ -821,7 +824,6 @@ and read `git status` before committing.
 
 ### Ideas, only if you want them
 
-- Make the Latest Movies year automatic.
 - Restore scroll position after sign-in.
 - Add account deletion.
 - Move OMDb requests behind a small server function.

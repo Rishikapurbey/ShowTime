@@ -159,6 +159,7 @@ src/lib/         firebase.js (lazy SDK loaders), watchlist.js, stats.js, share.j
 src/pages/       Route pages, plus AuthForm.css shared by login and signup
 src/test/        setup.js, renderWithAuth.jsx, backToHome.test.jsx
 rules-tests/     Firestore rules tests
+public/          Site icons and link preview image
 firestore.rules  All database security rules
 ```
 
@@ -227,6 +228,7 @@ Dark cinema look. Reuse these values:
 - Toolbars use pill shapes (`border-radius: 20px`). Menus and dialogs use 12 to 14px corners.
 - **Use `Dropdown`, never a native `<select>`.** Use `SignInDialog`'s native `<dialog>` approach for
   modals and `Toast` for short confirmations. Never use `alert`, `confirm` or `prompt`.
+- `AuthProvider` reports failed watchlist writes through `watchlistError`, shown by the shared toast.
 - Shared buttons: `.cta-button` and `.cta-button.secondary` in `App.css`.
 - The red circle with a white tick is the "added or selected" mark.
 - Layouts must work from 320px phones to wide screens. The usual breakpoints are 768px and 480px.
@@ -298,7 +300,6 @@ Dark cinema look. Reuse these values:
 
 Start these only if the owner asks.
 
-- "Latest Movies" uses a hard-coded year, `2025`, in `HomePage.jsx`.
 - After signing in from a prompt, visitors return to the right page but at the top of it.
 - The sign-in prompt was browser-tested with a simulated login and sample movie data.
 - There is no account deletion, no email verification and no backup job in this repo.
